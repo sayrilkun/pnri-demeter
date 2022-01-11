@@ -1,17 +1,26 @@
 Integrated Image Recognition in the Morphometric Analysis of the Hoya Pollinaria for Botanical Classification
 
+
 Installation Requirements:
 
+
 Python 3.9.6
+
 Setup Python in VSCode:
+
 https://code.visualstudio.com/docs/python/python-tutorial
 
+
 Git:
+
 https://git-scm.com/
+
 
 Libraries to install: pip install <library>
   
+  
 firebase_admin (for backend database, cloud firestore)
+  
   
 pyrebase4 (for backend, cloud storage)
   
@@ -27,6 +36,8 @@ tkinter (file dialog)
   
 qrcode (qr generator)
 
+  
+  
 Documentations:
 
 Python:
@@ -47,6 +58,8 @@ https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html
 Material Icon Used:
 https://icons8.com/
 
+  
+  
 TO DO:
   
 Data Collection -> Augmentation -> Segmentation -> Classification -> Morphometric Analysis -> Model
@@ -62,6 +75,8 @@ Authentication Screen
 Help
   
 Settings
+  
+  
   
 
 Finished:
@@ -82,6 +97,8 @@ save image, data, file
   
 refresh list
 
+  
+  
 Issues:
   
 camera lag after reopen
