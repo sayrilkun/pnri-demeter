@@ -16,10 +16,15 @@ firebase_admin (for backend database, cloud firestore)
 pyrebase4 (for backend, cloud storage)
   
 kivy (for frontend)
+  
 kivymd (for frontend)
+  
 opencv-python (for image processing)
+  
 pyzbar (for qr code scanner)
+  
 tkinter (file dialog)
+  
 qrcode (qr generator)
 
 Documentations:
@@ -43,27 +48,48 @@ Material Icon Used:
 https://icons8.com/
 
 TO DO:
+  
 Data Collection -> Augmentation -> Segmentation -> Classification -> Morphometric Analysis -> Model
+  
 On-screen Camera/Scanner
+  
 Edit/Delete data
+  
 Search DB
+  
 Authentication Screen
+  
 Help
+  
 Settings
+  
 
 Finished:
+  
 Setup database and storage
+  
 setup UI
+  
 add camera
+  
 add qr scanner
+  
 add qr generator
+  
 upload image, data, file
+  
 save image, data, file
+  
 refresh list
 
 Issues:
+  
 camera lag after reopen
+  
 search list
+  
 view image/ pdf
+  
 save qr code
+  
 no spinner on file upload
