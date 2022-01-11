@@ -1,0 +1,7 @@
+firebase_admin
+kivy
+kivymd
+opencv-python
+pyzbar
+pyrebase
+qrcode
