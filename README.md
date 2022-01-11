@@ -10,8 +10,11 @@ Git:
 https://git-scm.com/
 
 Libraries to install: pip install <library>
+  
 firebase_admin (for backend database, cloud firestore)
+  
 pyrebase4 (for backend, cloud storage)
+  
 kivy (for frontend)
 kivymd (for frontend)
 opencv-python (for image processing)
