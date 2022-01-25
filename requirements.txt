@@ -3,5 +3,7 @@ kivy
 kivymd
 opencv-python
 pyzbar
-pyrebase
+pyrebase4
 qrcode
+kaki
+plyer

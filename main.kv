@@ -1,6 +1,7 @@
 #: import webbrowser webbrowser
 
 ScreenManager:
+    LoginScreen:
     MenuScreen:
     CameraScreen:
     ImageScreen:
@@ -13,6 +14,56 @@ ScreenManager:
     SingleDocScreen:
     UploadDocScreen:
 
+<LoginScreen>:
+    name: 'login'
+    MDScreen:
+        md_bg_color: app.purple
+    # MDBoxLayout:
+    #     orientation: "vertical"
+    #     padding:dp(25)
+    #     Image:
+    #         source: 'login/icon.png'
+    # MDBoxLayout:
+    #     orientation: "vertical"
+    #     padding:dp(25)
+    Image: 
+        source: 'login/icon.png'
+        pos_hint: {"center_x": 0.5, "center_y": 0.75}
+        size_hint_y: None
+        height:'4.150cm'
+
+        # width: 10
+        # height: dp(100)
+        # allow_stretch: True
+    MDTextFieldRound:
+        id: username
+        hint_text: 'Username'
+        pos_hint: {"center_x": 0.5, "center_y": 0.55}
+        size_hint: .75,0.08
+        color_mode: 'accent'
+        icon_left: "account-check"
+        hint_text: "Username"
+    MDTextFieldRound:
+        id: password  
+        icon_left: "key-variant"
+        icon_right: 'eye-off'
+        hint_text: 'Password'
+        pos_hint: {"center_x": 0.5, "center_y": 0.45}
+        size_hint: .75,0.08
+        color_mode: 'accent'
+        password: True
+
+    MDLabel:
+        id: status
+        text: ''
+        halign: 'center'
+        pos_hint: {"center_y": 0.35}
+    
+    MDRaisedButton:
+        text: 'Sign In'
+        pos_hint: {"center_x": 0.5, "center_y": 0.25}
+        on_press: 
+            app.sign_in()
 <MenuScreen>:
     name: 'menu'
     MDScreen:
@@ -335,7 +386,6 @@ ScreenManager:
         icon:'arrow-left'
         pos_hint: {'center_x':0.1,'center_y':0.95}
         on_press: 
-            app.set_data()
             root.manager.current = 'menu'
             root.manager.transition.direction = "right"
 

@@ -21,7 +21,8 @@ import frame_draw
 
 # get camera id from argv[1]
 # example "python3 camruler.py 2"
-camera_id = 0
+ip = 'http://192.168.1.2:4747/video'
+camera_id = ip
 if len(sys.argv) > 1:
     camera_id = sys.argv[1]
     if camera_id.isdigit():

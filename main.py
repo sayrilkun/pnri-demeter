@@ -75,7 +75,8 @@ class OneLineIcon(OneLineAvatarIconListItem):
 
 class OneLine(OneLineListItem):
     divider = None
-
+class LoginScreen(Screen):
+    pass
 class MenuScreen(Screen):
     pass
 
@@ -129,8 +130,10 @@ class SettingsScreen(Screen):
 class SingleDocScreen(Screen):
     pass
 
+
 class UploadDocScreen(Screen):
     pass
+        
         
 class Tab(MDFloatLayout, MDTabsBase):
     pass
@@ -154,6 +157,17 @@ class DemoApp(App, MDApp):
     'PHP': 'language-php',
     'C++': 'language-cpp',
     }
+
+    def sign_in(self):
+        username = self.help.get_screen('login').ids.username.text
+        password = self.help.get_screen('login').ids.password.text
+
+        if username == 'admin' and password == '12345':
+            self.help.current = 'menu'
+            self.help.transition.direction = 'right'
+        
+        else:
+            self.help.get_screen('login').ids.status.text = 'Invalid credentials. Please try again.'
 
     def go(self):
         print('sdfadsfadsfadsfasdfadsf')
