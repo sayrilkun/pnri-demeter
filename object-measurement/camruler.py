@@ -150,7 +150,7 @@ def distance(x1,y1,x2,y2):
 #-------------------------------
 
 # define display frame
-framename = "CamRuler ~ ClaytonDarwin's Youtube Channel"
+framename = "Morphometric Analysis"
 cv2.namedWindow(framename,flags=cv2.WINDOW_NORMAL|cv2.WINDOW_GUI_NORMAL)
 
 #-------------------------------

@@ -16,7 +16,6 @@ from kivy.properties import StringProperty
 from firebase_admin import credentials
 from firebase_admin import firestore
 from kivymd.app import MDApp
-from kaki.app import App
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
@@ -35,7 +34,6 @@ from kivy.uix.image import AsyncImage
 from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.label import MDLabel
 from kivy.uix.boxlayout import BoxLayout
-from plyer import filechooser
 
 
 Window.size=(400,700)
@@ -138,7 +136,7 @@ class UploadDocScreen(Screen):
 class Tab(MDFloatLayout, MDTabsBase):
     pass
 
-class DemoApp(App, MDApp):
+class DemoApp(MDApp):
     global db
     purple = 56/255,40/255,81/255,1
     green = 5/255, 150/255, 148/255, 1
