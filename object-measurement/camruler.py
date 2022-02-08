@@ -10,6 +10,8 @@ from math import hypot
 # python3 -m pip install opencv-python
 import numpy as np
 import cv2
+import numpy as np
+import imutils
 
 # local clayton libs
 import frame_capture
@@ -22,7 +24,7 @@ import frame_draw
 # get camera id from argv[1]
 # example "python3 camruler.py 2"
 ip = 'http://192.168.1.2:4747/video'
-camera_id = ip
+camera_id = 0
 if len(sys.argv) > 1:
     camera_id = sys.argv[1]
     if camera_id.isdigit():
@@ -476,32 +478,55 @@ while 1:
         # invert
         frame1 = ~frame1
 
-        # find contours on thresholded image
-        contours,nada = cv2.findContours(frame1,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-        
-        # small crosshairs (after getting frame1)
-        draw.crosshairs(frame0,5,weight=2,color='green')    
-    
-        # loop over the contours
-        for c in contours:
+        template1 = cv2.imread("retinaculum.png")
+        template1 = cv2.cvtColor(template1, cv2.COLOR_BGR2GRAY)
+        template1 = cv2.Canny(template1, 50, 200)
+        template = imutils.resize(template1, width=60)
+        (tH, tW) = template.shape[:2]
 
-            # contour data (from top left)
-            x1,y1,w,h = cv2.boundingRect(c)
-            x2,y2 = x1+w,y1+h
-            x3,y3 = x1+(w/2),y1+(h/2)
+        gray = cv2.cvtColor(frame0, cv2.COLOR_BGR2GRAY)
+        found = None
 
-            # percent area
-            percent = 100*w*h/area
-            
-            # if the contour is too small, ignore it
-            if percent < auto_percent:
-                    continue
+        # loop over the scales of the image
+        for scale in np.linspace(0.2, 1.0, 20)[::-1]:
+            # resize the image according to the scale, and keep track
+            # of the ratio of the resizing
+            resized = imutils.resize(gray, width=int(gray.shape[1] * scale))
+            r = gray.shape[1] / float(resized.shape[1])
 
-            # if the contour is too large, ignore it
-            elif percent > 60:
-                    continue
+            # if the resized image is smaller than the template, then break
+            # from the loop
+            if resized.shape[0] < tH or resized.shape[1] < tW:
+                print("frame is smaller than the template")
+                break
 
-            # convert to center, then distance
+            # detect edges in the resized, grayscale image and apply template
+            # matching to find the template in the image
+            edged = cv2.Canny(resized, 50, 200)
+            result = cv2.matchTemplate(edged, template, cv2.TM_CCOEFF)
+            (_, maxVal, _, maxLoc) = cv2.minMaxLoc(result)
+
+            # if we have found a new maximum correlation value, then update
+            # the bookkeeping variable
+            if found is None or maxVal > found[0]:
+                found = (maxVal, maxLoc, r)
+
+            # unpack the bookkeeping variable and compute the (x, y) coordinates
+            # of the bounding box based on the resized ratio
+        # print(found)
+        if found is None:
+            # just show only the frames if the template is not detected
+            # cv2.imshow(frame0)
+            print("No template is found")
+        else:
+            (_, maxLoc, r) = found
+            (x1, y1) = (int(maxLoc[0] * r), int(maxLoc[1] * r))
+            (x2, y2) = (int((maxLoc[0] + tW) * r), int((maxLoc[1] + tH) * r))
+            (x3,y3) = x1+(tW/2),y1+(tH/2)
+            print(x1,y1,x2,y2)
+
+            # draw a bounding box around the detected result and display the image
+            # cv2.rectangle(frame0, (startX, startY), (endX, endY), (0, 0, 255), 2)
             x1c,y1c = conv(x1-(cx),y1-(cy))
             x2c,y2c = conv(x2-(cx),y2-(cy))
             xlen = abs(x1c-x2c)
@@ -511,10 +536,8 @@ while 1:
                 alen = (xlen+ylen)/2              
             carea = xlen*ylen
 
-            # plot
             draw.rect(frame0,x1,y1,x2,y2,weight=2,color='red')
 
-            # add dimensions
             draw.add_text(frame0,f'{xlen:.2f}',x1-((x1-x2)/2),min(y1,y2)-8,center=True,color='red')
             draw.add_text(frame0,f'Area: {carea:.2f}',x3,y2+8,center=True,top=True,color='red')
             if alen:
@@ -523,6 +546,60 @@ while 1:
                 draw.add_text(frame0,f'{ylen:.2f}',x2+4,(y1+y2)/2,middle=True,color='red')
             else:
                 draw.add_text(frame0,f'{ylen:.2f}',x1-4,(y1+y2)/2,middle=True,right=True,color='red')
+
+            # cv2.imshow(frame0)
+
+
+
+
+
+        # find contours on thresholded image
+        # contours,nada = cv2.findContours(frame1,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+        
+        # # small crosshairs (after getting frame1)
+        # draw.crosshairs(frame0,5,weight=2,color='green')    
+    
+        # # loop over the contours
+        # for c in contours:
+
+        #     # contour data (from top left)
+        #     x1,y1,w,h = cv2.boundingRect(c)
+        #     x2,y2 = x1+w,y1+h
+        #     x3,y3 = x1+(w/2),y1+(h/2)
+
+        #     # percent area
+        #     percent = 100*w*h/area
+            
+        #     # if the contour is too small, ignore it
+        #     if percent < auto_percent:
+        #             continue
+
+        #     # if the contour is too large, ignore it
+        #     elif percent > 60:
+        #             continue
+
+        #     # convert to center, then distance
+        #     x1c,y1c = conv(x1-(cx),y1-(cy))
+        #     x2c,y2c = conv(x2-(cx),y2-(cy))
+        #     xlen = abs(x1c-x2c)
+        #     ylen = abs(y1c-y2c)
+        #     alen = 0
+        #     if max(xlen,ylen) > 0 and min(xlen,ylen)/max(xlen,ylen) >= 0.95:
+        #         alen = (xlen+ylen)/2              
+        #     carea = xlen*ylen
+
+        #     # plot
+        #     draw.rect(frame0,x1,y1,x2,y2,weight=2,color='red')
+
+        #     # add dimensions
+        #     draw.add_text(frame0,f'{xlen:.2f}',x1-((x1-x2)/2),min(y1,y2)-8,center=True,color='red')
+        #     draw.add_text(frame0,f'Area: {carea:.2f}',x3,y2+8,center=True,top=True,color='red')
+        #     if alen:
+        #         draw.add_text(frame0,f'Avg: {alen:.2f}',x3,y2+34,center=True,top=True,color='green')
+        #     if x1 < width-x2:
+        #         draw.add_text(frame0,f'{ylen:.2f}',x2+4,(y1+y2)/2,middle=True,color='red')
+        #     else:
+        #         draw.add_text(frame0,f'{ylen:.2f}',x1-4,(y1+y2)/2,middle=True,right=True,color='red')
 
     #-------------------------------
     # dimension mode
