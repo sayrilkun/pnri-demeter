@@ -10,7 +10,7 @@ def main():
     template1 = cv2.Canny(template1, 50, 200)
     template = imutils.resize(template1, width=60)
     (tH, tW) = template.shape[:2]
-    cv2.imshow("Template", template)
+    # cv2.imshow("Template", template)
 
     windowName = "Template Matching of Hoya Polinaria"
     cv2.namedWindow(windowName)

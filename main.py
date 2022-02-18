@@ -7,6 +7,7 @@ import webbrowser
 import tkinter as tk
 import pyrebase
 import qrcode
+import string
 
 from datetime import datetime
 from kivymd.uix.snackbar import Snackbar
@@ -184,7 +185,7 @@ class DemoApp(MDApp):
         return sum 
 
     def get_singleDoc(docu):
-        doc_ref = db.collection('Hoya Species').document(docu)
+        doc_ref = db.collection('Hoya').document(docu)
         single_doc = doc_ref.get()
         return single_doc
 
@@ -279,7 +280,7 @@ class DemoApp(MDApp):
 
     def delete_doc(self):
         doc= self.help.get_screen('singledoc').ids.species.title
-        db.collection('Hoya Species').document(doc).delete()
+        db.collection('Hoya').document(doc).delete()
         self.swtchScrn()
 
     def search_list(self):
@@ -287,7 +288,7 @@ class DemoApp(MDApp):
 
             db= firestore.client()
             search=self.help.get_screen('collections').ids.search.text
-            docs = db.collection('Hoya Species').stream()
+            docs = db.collection('Hoya').stream()
             for doc in docs:
                 if search in doc.id:
                     await asynckivy.sleep(0)
@@ -312,7 +313,8 @@ class DemoApp(MDApp):
 
     def oks_qr(self):
         myDate = self.help.get_screen('qr').ids.forem.text
-        doc_ref = db.collection('Hoya Species').document(myDate)
+        doc_ref = db.collection('Hoya').document(myDate)
+        
 
         doc = doc_ref.get()
         if doc.exists:
@@ -339,7 +341,7 @@ class DemoApp(MDApp):
     def passValue(self, *args):
         
         args_str = ','.join(map(str,args))
-        doc_ref = db.collection('Hoya Species').document(args_str)
+        doc_ref = db.collection('Hoya').document(args_str)
         single_doc = doc_ref.get()
         datos= f'{single_doc.to_dict()}'
         # print(datos)
@@ -437,6 +439,12 @@ class DemoApp(MDApp):
         self.help.current = screen
         self.help.transition.direction = 'right'
 
+    def generate(self):
+        S = 8  # number of characters in the string.  
+        # call random.choices() string module to find the string in Uppercase + numeric data.  
+        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = S))    
+        x= str(ran)
+        return x
 
     def upload(self):
         
@@ -470,7 +478,9 @@ class DemoApp(MDApp):
             storage.child(f"{name}/{name}_file").put(file)
             file_url = storage.child(f"{name}/{name}_file").get_url(None)
 
-        qr_url = self.add_qr(name)
+        scan_id = self.generate()
+
+        qr_url = self.add_qr(name, scan_id)
 
         data = { 
             'Name': f'{name}',
@@ -485,10 +495,11 @@ class DemoApp(MDApp):
             'Caudicle Bulb Diameter': f'{caudicle}',
             'img_url' : f'{img_url}',
             'file_url' : f'{file_url}',
-            'qr_url': f'{qr_url}'
+            'qr_url': f'{qr_url}',
+            'scan_id' : f'{scan_id}'
             }
 
-        db.collection('Hoya Species').document(f'{name}').set(data)
+        db.collection('Hoya').document(f'{name}').set(data)
 
         self.show_alert_dialog()
 
@@ -510,8 +521,8 @@ class DemoApp(MDApp):
         # print(file)
         self.help.get_screen('uploaddoc').ids.input_12.text = file
 
-    def add_qr(self, name):
-        input_data = name
+    def add_qr(self, name, scan_id):
+        input_data = scan_id
         #Creating an instance of qrcode
         qr = qrcode.QRCode(
                 version=1,
@@ -596,7 +607,10 @@ class DemoApp(MDApp):
             for barcode in decode(frame):
                 
                 myData = barcode.data.decode('utf-8')
-                self.help.get_screen('qr').ids.forem.text = myData
+                qr_ref = db.collection('Hoya')
+                docs = qr_ref.where('scan_id', '==', f'{myData}').get()
+                for doc in docs:
+                    self.help.get_screen('qr').ids.forem.text = doc.id
                 self.help.current = 'qr'
                 # webbrowser.open(myData)
                 pts = np.array([barcode.polygon], np.int32)

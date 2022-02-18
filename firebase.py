@@ -138,3 +138,16 @@ def delete_storager():
     storage.delete("Hoya kumu")
 
 # delete_storager()
+
+def query():
+    cities_ref = db.collection(u'Hoya')
+
+    docs = cities_ref.where(u'scan_id', u'==', 'QE4DGWVS').get()
+
+    # print(docs.to_dict())
+    for doc in docs:
+        print(f'{doc.id} ')
+
+    # return doc.id
+
+query()
