@@ -24,7 +24,7 @@ import frame_draw
 # get camera id from argv[1]
 # example "python3 camruler.py 2"
 ip = 'http://192.168.1.2:4747/video'
-camera_id = 0
+camera_id = 1
 if len(sys.argv) > 1:
     camera_id = sys.argv[1]
     if camera_id.isdigit():
@@ -167,6 +167,7 @@ key_flags = {'config':False, # c key
              'norms':False,  # n key
              'rotate':False, # r key
              'lock':False,   # 
+             'capture': False,
              }
 
 def key_flags_clear():
@@ -231,6 +232,11 @@ def key_event(key):
         key_flags['thresh'] = not key_flags['thresh']
         key_flags['percent'] = False
         key_flags['lock'] = False
+
+    elif key == 32:
+        # if key_flags['auto']:
+        cv2.imwrite('object-measurement/imags/imags.png', frame0)
+
 
     # log
     print('key:',[key,chr(key)])
@@ -478,7 +484,7 @@ while 1:
         # invert
         frame1 = ~frame1
 
-        template1 = cv2.imread("retinaculum.png")
+        template1 = cv2.imread("object-measurement/retinaculum.png")
         template1 = cv2.cvtColor(template1, cv2.COLOR_BGR2GRAY)
         template1 = cv2.Canny(template1, 50, 200)
         template = imutils.resize(template1, width=60)
@@ -701,6 +707,8 @@ while 1:
     elif key not in (-1,255):
         key_event(key)
 
+    # elif key in (32):
+    #     cv2.imwrite(f'object-deetector/imags/cap.png', frame0)
 #-------------------------------
 # kill sequence
 #-------------------------------
