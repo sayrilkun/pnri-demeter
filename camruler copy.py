@@ -356,7 +356,7 @@ def medisplay_instances(image, boxes, masks, ids, names, scores):
         caption = '{} {:.2f}'.format(label, score) if score else label
         mask = masks[:, :, i]
 
-        x3,y3 = x1+(x2/2),y1+(y2/2)
+        # x3,y3 = x1+(x2/2),y1+(y2/2)
         x1c,y1c = conv(x1-(cx),y1-(cy))
         x2c,y2c = conv(x2-(cx),y2-(cy))
         xlen = abs(x1c-x2c)
@@ -373,9 +373,9 @@ def medisplay_instances(image, boxes, masks, ids, names, scores):
         )
 
         draw.add_text(image,f'{xlen:.2f}',x1-((x1-x2)/2),min(y1,y2)-8,center=True,color='red')
-        draw.add_text(image,f'Area: {carea:.2f}',x3,y2+8,center=True,top=True,color='red')
-        if alen:
-            draw.add_text(image,f'Avg: {alen:.2f}',x3,y2+34,center=True,top=True,color='green')
+        # draw.add_text(image,f'Area: {carea:.2f}',x3,y2+8,center=True,top=True,color='red')
+        # if alen:
+        #     draw.add_text(image,f'Avg: {alen:.2f}',x3,y2+34,center=True,top=True,color='green')
         if x1 < width-x2:
             draw.add_text(image,f'{ylen:.2f}',x2+4,(y1+y2)/2,middle=True,color='red')
         else:
@@ -855,7 +855,7 @@ while 1:
 
         if cv2.waitKey(1) & 0xFF == ord('z'):
             cv2.imwrite(f'captured_img/img_cap.png', frame0)
-            print("pakme?")
+            print("Processing...")
             predicted_img = cv2.imread('captured_img/img_cap.png')
             results = model.detect([predicted_img], verbose=0)
             r = results[0]

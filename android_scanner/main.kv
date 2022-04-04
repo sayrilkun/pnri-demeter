@@ -1,0 +1,228 @@
+ScreenManager:
+    MenuScreen:
+    ScannerScreen:
+    QRScreen:
+    HelpScreen:
+    SettingsScreen:
+    GeneratorScreen:
+
+
+<MenuScreen>:
+    name: 'menu'
+    MDScreen:
+        md_bg_color: app.purple
+        on_enter:
+            print('sfadseryeryetf')
+    MDBoxLayout:
+        orientation:'vertical'
+        MDBoxLayout:
+            size_hint_y:.25
+            padding:dp(25)
+            MDBoxLayout:
+                orientation:"vertical"
+                MDLabel:
+                    text:"Dashboard"
+                    font_style:"H4"
+                MDBoxLayout:
+                    adaptive_size:True
+                    spacing:dp(10)
+                    MDLabel:
+                        text:"Home"
+                        text_size:None,None
+                        adaptive_width:True
+                    MDIcon:
+                        icon:'chevron-down'
+
+        MDGridLayout:
+            size_hint_y:.75
+            cols:2
+            padding:[dp(15),dp(15),dp(15),dp(35)]
+            spacing:dp(15)
+            
+            ElementCard:
+                image:"images/cams.png"
+                text:"Camera"
+                subtext:"Morphometric Analysis"
+                items_count: ""
+                on_press: 
+                    # root.manager.current = 'camera'
+                    # root.manager.transition.direction = "left"
+                    # app.show_camie()
+
+            ElementCard:
+                image:"images/flower.png"
+                text:"Collections"
+                subtext:"Monitor Database"
+                items_count:""
+                on_press: 
+                    # # app.refresh_callback()
+                    # root.manager.current = 'collections'
+                    # root.manager.transition.direction = "left"
+
+            ElementCard:
+                image:"images/scanner.png"
+                text:"QR Code Scanner"
+                subtext:""
+                items_count:""
+                on_press: 
+                    root.manager.current = 'scanner'
+                    root.manager.transition.direction = "left"
+                    app.show_cam()
+
+            ElementCard:
+                image: "images/gener.png"
+                text:"QR Code Generator"
+                items_count:""
+                subtext:""
+                on_press: 
+                    root.manager.current = 'generator'
+                    root.manager.transition.direction = "left"
+                    
+            ElementCard:
+                image:"images/help.png"
+                text:"Help"
+                subtext:"How to use the App"
+                items_count:""
+                on_press: 
+                    root.manager.current = 'help'
+                    root.manager.transition.direction = "left"
+
+            ElementCard:
+                image:"images/setting.png"
+                text:"Settings"
+                subtext:""
+                items_count:""
+                on_press: 
+                    root.manager.current = 'settings'
+                    root.manager.transition.direction = "left"
+
+<ElementCard@MDCard>:
+    md_bg_color:69/255,55/255,86/255,1
+    padding:dp(15)
+    spacing:dp(15)
+    radius:dp(25)
+    ripple_behavior: True
+    image:''
+    text:""
+    items_count:""
+    subtext:''
+
+    orientation:'vertical'
+    Image:
+        source:root.image
+    MDBoxLayout:
+        orientation:'vertical'
+        MDLabel:
+            halign:"center"
+            text:root.text
+            font_style:"H6"
+        MDLabel:
+            halign:"center"
+            font_style:"Caption"
+            text:root.subtext
+        MDLabel:
+            halign:"center"
+            text:root.items_count   
+
+<ScannerScreen>:
+    name: 'scanner'
+    MDScreen:
+        md_bg_color:56/255,40/255,81/255,1
+    MDBoxLayout:
+        # size_hint_y:.25
+        padding:dp(15)
+        MDLabel:
+            text: 'Place QR Code here'
+            halign: 'center'
+            pos_hint: {"center_y": .8}
+
+    MDIconButton:
+        icon:'arrow-left'
+        pos_hint: {'center_x':0.1,'center_y':0.95}
+        on_press: 
+            root.manager.current = 'menu'
+            root.manager.transition.direction = "right"
+    MDBoxLayout:
+        # size_hint_y:.25
+        padding:dp(15)
+        KivyCamera:
+            id: cam
+            size_hint: 1,1
+            pos_hint: {"x":0,"top":1} 
+            # on_parent:
+            #     print('sfadtysf')
+<QRScreen>:
+    name: 'qr'
+    MDScreen:
+        md_bg_color:56/255,40/255,81/255,1
+
+    MDIconButton:
+        icon:'arrow-left'
+        pos_hint: {'center_x':0.1,'center_y':0.95}
+        on_press: 
+            root.manager.current = 'menu'
+            root.manager.transition.direction = "right"
+
+
+
+    MDLabel:
+        pos_hint: {'center_y':0.5}
+        halign: 'center'
+        text: 'hgvj'
+        id: forem
+        theme_text_color: "Custom"
+        text_color: 0, 1, 0, 1        
+
+
+    MDRaisedButton:
+        id: link
+        text: 'Go to link'
+        pos_hint: {'center_x':0.5,'center_y':0.2}        
+    MDRaisedButton:
+        # id: link
+        text: 'Go to document'
+        pos_hint: {'center_x':0.5,'center_y':0.4}  
+        # on_press:
+        #     app.oks_qr()
+
+<SettingsScreen>:
+    name: 'settings'
+    MDScreen:
+        md_bg_color:56/255,40/255,81/255,1
+    MDLabel:
+        text: 'Settings'
+        halign: 'center'
+
+    MDIconButton:
+        icon:'arrow-left'
+        pos_hint: {'center_x':0.1,'center_y':0.95}
+        on_press: 
+            root.manager.current = 'menu'
+            root.manager.transition.direction = "right"
+
+<HelpScreen>:
+    name: 'help'
+    MDLabel:
+        text: 'Help'
+        halign: 'center'
+        valign: 'top'
+
+    MDIconButton:
+        icon:'arrow-left'
+        pos_hint: {'center_x':0.1,'center_y':0.95}
+        on_press: 
+            root.manager.current = 'menu'
+            root.manager.transition.direction = "right"
+
+<GeneratorScreen>:
+    name: 'generator'
+    MDLabel:
+        text: 'Generator'
+        halign: 'center'
+
+    MDIconButton:
+        icon:'arrow-left'
+        pos_hint: {'center_x':0.1,'center_y':0.95}
+        on_press: 
+            root.manager.current = 'menu'
+            root.manager.transition.direction = "right"
