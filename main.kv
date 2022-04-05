@@ -503,7 +503,7 @@ ScreenManager:
             md_bg_color:56/255,40/255,81/255,1
             title: "Upload Data"
             type_height: "small"
-            left_action_items: [["arrow-left", lambda x : app.swtchScrn()]]
+            left_action_items: [["arrow-left", lambda x : app.swtchScreen('collections')]]
             
         MDTabs:
             id: tabs
@@ -627,7 +627,8 @@ ScreenManager:
                     pos_hint: {'center_x':0.5, 'center_y':0.1}
                     text: 'Save'
                     on_press: 
-                        app.upload()
+                        app.spin_dialog()
+                        app.upload_thread()
                         
 <Content>:
     orientation: "vertical"
@@ -641,3 +642,15 @@ ScreenManager:
         OneLineListItem:
             text: "Delete"
 
+<ContentSpin>:
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "60dp"
+
+    MDSpinner:
+        id: spinner
+        size_hint: None, None
+        size: dp(46), dp(46)
+        pos_hint: {'center_x': .5, 'center_y': .5}
+        # active: check.active

@@ -54,7 +54,21 @@ data = {
 #     print(user.key()) # Morty
 #     print(user.val()) # {name": "Mortimer 'Morty' Smith"}
 
-single_doc = db.child("Hoya").child("Hota ming mong")
-img_url = single_doc.child("img_url").get()
-potek = "'"+img_url.val()+"'"
-print(potek)
+# single_doc = db.child("Hoya").child("Hota ming mong")
+# img_url = single_doc.child("img_url").get()
+# potek = "'"+img_url.val()+"'"
+# print(potek)
+
+# users = db.child("Hoya").child("Hoya ming mong").order_by_child("scan_id").get()
+# # waw = users.val()
+# print(users)
+
+# def noquote(s):
+#     return s
+# pyrebase.pyrebase.quote = noquote
+
+hey = db.child("Hoya").order_by_child("scan_id").equal_to("APDF5JYG").get()
+for user in hey.each():
+    print(user.key())
+    # print(user.val())
+# print(hey.val())

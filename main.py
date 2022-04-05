@@ -8,7 +8,11 @@ import tkinter as tk
 import pyrebase
 import qrcode
 import string
+import threading
 
+
+from kivy.clock import mainthread
+from kivymd.toast import toast
 from datetime import datetime
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.button import MDIconButton, MDFloatingActionButton
@@ -56,7 +60,8 @@ firebase = pyrebase.initialize_app(config)
 storage= firebase.storage()
 
 
-
+class ContentSpin(BoxLayout):
+    pass
 class Content(BoxLayout):
     pass
 
@@ -131,7 +136,9 @@ class SingleDocScreen(Screen):
 
 
 class UploadDocScreen(Screen):
-    pass
+    def on_enter(self):
+        for i in range(1,13):
+            self.manager.get_screen('uploaddoc').ids[f'input_{i}'].text = ""
         
         
 class Tab(MDFloatLayout, MDTabsBase):
@@ -146,6 +153,8 @@ class DemoApp(MDApp):
     dialog3= None
     dialog4= None
     dialog5= None
+    dialog6= None
+
 
     db= firestore.client()
 
@@ -176,9 +185,9 @@ class DemoApp(MDApp):
         sum=x.add_num(8,3)
         print(sum)
 
-    def swtchScrn(self,*args):
-        self.manager.current = 'singledoc'
-        self.manager.transition.direction = 'left'
+    # def swtchScrn(self,*args):
+    #     self.manager.current = 'singledoc'
+    #     self.manager.transition.direction = 'left'
 
     def add_num(self, x,y):
         sum=x+y
@@ -352,8 +361,7 @@ class DemoApp(MDApp):
         self.search_callback()
         self.help.current = 'collections'
         self.help.transition.direction = 'right'
-        for i in range(1,13):
-            self.help.get_screen('uploaddoc').ids[f'input_{i}'].text = ""
+
 
     def swtchScreen(self,screen,*args):
         # self.refresh_callback()
@@ -422,9 +430,12 @@ class DemoApp(MDApp):
 
         db.collection('Hoya').document(f'{name}').set(data)
 
-        self.show_alert_dialog()
+        self.dialog6.dismiss(force=True)
 
+        toast("Document Saved Successfully")
 
+    def upload_thread(self):
+        threading.Thread(target=(self.upload)).start()
 
     def add_img(self):
         root = tk.Tk()
@@ -499,6 +510,15 @@ class DemoApp(MDApp):
             )
         self.dialog3.open()
 
+    def spin_dialog(self):
+        if not self.dialog6:
+            self.dialog6 = MDDialog(
+                type="custom",
+                content_cls=ContentSpin(),
+            )
+        self.dialog6.open()
+
+
     def delete_dialog(self):
         if not self.dialog4:
             self.dialog4 = MDDialog(
@@ -552,7 +572,7 @@ class DemoApp(MDApp):
     def show_cam(self):
         cam = self.help.get_screen('scanner').ids.cam
         self.clock_event = Clock.schedule_interval(self.update, 1.0 /30)
-        cam.capture = cv2.VideoCapture(1,cv2.CAP_DSHOW)
+        cam.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
     def capture(self):
         self.help.get_screen('image').ids.cap_img.source = 'captured_img/image.png'
