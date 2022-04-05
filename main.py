@@ -148,23 +148,13 @@ class DemoApp(MDApp):
     global db
     purple = 56/255,40/255,81/255,1
     green = 5/255, 150/255, 148/255, 1
-    dialog1 = None
     dialog2= None
     dialog3= None
     dialog4= None
     dialog5= None
     dialog6= None
 
-
     db= firestore.client()
-
-    apo= "facebook.com"
-    abu = 5
-    dat = {
-    'Python': 'language-python',
-    'PHP': 'language-php',
-    'C++': 'language-cpp',
-    }
 
     def sign_in(self):
         username = self.help.get_screen('login').ids.username.text
@@ -176,37 +166,6 @@ class DemoApp(MDApp):
         
         else:
             self.help.get_screen('login').ids.status.text = 'Invalid credentials. Please try again.'
-
-    def go(self):
-        print('sdfadsfadsfadsfasdfadsf')
-
-    def trylang(self,obj):
-        x=DemoApp()
-        sum=x.add_num(8,3)
-        print(sum)
-
-    # def swtchScrn(self,*args):
-    #     self.manager.current = 'singledoc'
-    #     self.manager.transition.direction = 'left'
-
-    def add_num(self, x,y):
-        sum=x+y
-        return sum 
-
-    def get_singleDoc(docu):
-        doc_ref = db.collection('Hoya').document(docu)
-        single_doc = doc_ref.get()
-        return single_doc
-
-    def get_value(self):
-        x= CollectionsScreen()
-        sum = x.add_num(5,6)
-        return sum
-
-
-    def add_num(self, x,y):
-        sum=x+y+a
-        return sum
 
     def delete_doc(self):
         doc= self.help.get_screen('singledoc').ids.species.title
@@ -431,8 +390,10 @@ class DemoApp(MDApp):
         db.collection('Hoya').document(f'{name}').set(data)
 
         self.dialog6.dismiss(force=True)
-
         toast("Document Saved Successfully")
+        self.swtchScrn()
+
+
 
     def upload_thread(self):
         threading.Thread(target=(self.upload)).start()
@@ -476,19 +437,6 @@ class DemoApp(MDApp):
                 text= "Uploading Document... DO NOT CLICK ANYWHERE",
             )
         self.dialog5.open()
-
-    def show_alert_dialog(self):
-        if not self.dialog1:
-            self.dialog1 = MDDialog(
-                text= "Document Successfully Saved.",
-                buttons=[
-                    MDRaisedButton(text="OK", 
-                    on_press = lambda x : self.swtchScrn('collections'),
-                    on_release = lambda y: self.dialog1.dismiss(force=True)
-                    )
-                ],
-            )
-        self.dialog1.open()
 
     def show_no_doc_dialog(self):
         if not self.dialog2:
