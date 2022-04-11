@@ -183,10 +183,17 @@ class DemoApp(MDApp):
                     await asynckivy.sleep(0)
                     self.help.get_screen('collections').ids.box.add_widget(
                         OneLineIcon(text= f'{doc.id}',
-                        on_press= lambda x, value_for_pass=doc.id: self.passValue(value_for_pass),
+                        # on_press= lambda x, value_for_pass=doc.id: self.passValue(value_for_pass),
+                        on_release = lambda y: self.spin_dialog(),
+                        on_press= lambda x, value_for_pass=doc.id: self.passValue_thread(value_for_pass),
+
                         ))
         asynckivy.start(search_list())
+    
 
+
+    def passValue_thread(self,*args):
+        threading.Thread(target=self.passValue, args = args).start()
 
     def search_callback(self, *args):
         '''A method that updates the state of your application
@@ -315,6 +322,10 @@ class DemoApp(MDApp):
         # print(format_2[i])
         self.help.current = 'singledoc'    
         self.help.transition.direction = 'left'   
+        self.dialog6.dismiss(force=True)
+
+
+
 
     def swtchScrn(self,*args):
         self.search_callback()
@@ -520,7 +531,7 @@ class DemoApp(MDApp):
     def show_cam(self):
         cam = self.help.get_screen('scanner').ids.cam
         self.clock_event = Clock.schedule_interval(self.update, 1.0 /30)
-        cam.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+        cam.capture = cv2.VideoCapture(1,cv2.CAP_DSHOW)
 
     def capture(self):
         self.help.get_screen('image').ids.cap_img.source = 'captured_img/image.png'
@@ -534,7 +545,7 @@ class DemoApp(MDApp):
         # disabled cam, naglalag kasi
         cam = self.help.get_screen('camera').ids.camie
         self.clock_event = Clock.schedule_interval(self.object_detection, 1.0 /60)
-        cam.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW) 
+        cam.capture = cv2.VideoCapture(1,cv2.CAP_DSHOW) 
         self.help.current = 'camera'
         self.help.transition.direction = "left"
 
