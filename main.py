@@ -10,6 +10,9 @@ import qrcode
 import string
 import threading
 
+import utils.frame_capture as frame_capture
+import utils.frame_draw as frame_draw
+# import utils.camruler as camruler
 
 from kivy.clock import mainthread
 from kivymd.toast import toast
@@ -18,8 +21,7 @@ from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.button import MDIconButton, MDFloatingActionButton
 from tkinter import filedialog
 from kivy.properties import StringProperty
-from firebase_admin import credentials
-from firebase_admin import firestore
+
 from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen
@@ -54,11 +56,10 @@ config = {
     "measurementId": "G-00QH790MRG",
 }
 
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+
 firebase = pyrebase.initialize_app(config)
 storage= firebase.storage()
-
+db= firebase.database()
 
 class ContentSpin(BoxLayout):
     pass
@@ -85,6 +86,7 @@ class MenuScreen(Screen):
     pass
 
 class CameraScreen(Screen):
+    pass
 
     # def on_enter(self):
     #     x=DemoApp()
@@ -92,10 +94,10 @@ class CameraScreen(Screen):
     #     self.clock_event = Clock.schedule_interval(x.object_detection, 1.0 /60)
     #     cam.capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
-    def on_leave(self, *args):
-        cam = self.ids.camie
-        cam.capture.release()
-        cam.clear_widgets()
+    # def on_leave(self, *args):
+    #     cam = self.ids.camie
+    #     cam.capture.release()
+    #     cam.clear_widgets()
         # self.clock_event.cancel()
 
 class ImageScreen(Screen):
@@ -139,23 +141,143 @@ class UploadDocScreen(Screen):
     def on_enter(self):
         for i in range(1,13):
             self.manager.get_screen('uploaddoc').ids[f'input_{i}'].text = ""
-        
+
+    def eraser(self):
+        for i in range(1,13):
+            self.manager.get_screen('uploaddoc').ids[f'input_{i}'].text = ""
         
 class Tab(MDFloatLayout, MDTabsBase):
     pass
 
 class DemoApp(MDApp):
-    global db
+
+###################################################################
+# COLOR SCHEMES
+###################################################################
     purple = 56/255,40/255,81/255,1
-    green = 5/255, 150/255, 148/255, 1
+    dark_green = 43/255, 172/255, 127/255, 1
+    light_green =  197/255, 230/255, 127/255, 1
+    light_green2 = 27/255, 229/255, 127/255, 1
+    light_green3 = 135/255, 230/255, 127/255, 1
+    light_green4 = 193/255, 225/255, 193/255, 1
+    dark_green2 = 37/255, 160/255, 127/255, 1
+    dark1 = 143/255, 188/255, 143/255,1
+    light1 = 60/255, 179/255, 113/255, 1
+    dark2 = 46/255, 139/255, 87/255, 1
+
+###################################################################
+# DIALOGS
+###################################################################
     dialog2= None
     dialog3= None
     dialog4= None
-    dialog5= None
     dialog6= None
 
-    db= firestore.client()
 
+    def show_no_doc_dialog(self):
+        if not self.dialog2:
+            self.dialog2 = MDDialog(
+                text= "File does not exist!",
+                buttons=[
+                    MDRaisedButton(text="OK", 
+                    on_press = lambda x :self.dialog2.dismiss(force=True)
+                    )
+                ],
+            )
+        self.dialog2.open()
+
+    def show_simple_dialog(self):
+        if not self.dialog3:
+            self.dialog3 = MDDialog(
+                type="custom",
+                content_cls=Content(),
+            )
+        self.dialog3.open()
+
+    def delete_dialog(self):
+        if not self.dialog4:
+            self.dialog4 = MDDialog(
+                text= "Are you sure you want to delete?",
+                buttons=[
+                    MDFlatButton(
+                        text = 'Cancel',
+                        on_press = lambda x: self.dialog4.dismiss(force=True)),
+                    MDRaisedButton(
+                        text="OK", 
+                        on_press = lambda x : self.delete_doc(),
+                        on_release = lambda x: self.dialog4.dismiss(force=True)
+
+                    )
+                ],
+            )
+        self.dialog4.open()
+
+    @mainthread
+    def spin_dialog(self):
+        if not self.dialog6:
+            self.dialog6 = MDDialog(
+                type="custom",
+                content_cls=ContentSpin(),
+            )
+        self.dialog6.open()
+
+###################################################################
+# SWITCH SCREEN
+###################################################################
+    def swtchScrn(self,*args):
+        self.search_callback()
+        self.help.current = 'collections'
+        self.help.transition.direction = 'right'
+
+
+    def swtchScreen(self,screen,*args):
+        # self.refresh_callback()
+        self.help.current = screen
+        self.help.transition.direction = 'right'
+
+###################################################################
+# DELETE DOCUMENT
+###################################################################
+    def delete_doc(self):
+        doc= self.help.get_screen('singledoc').ids.species.title
+        db.child("Hoya").child(doc).remove()
+        self.swtchScrn()
+
+
+###################################################################
+# GENERATE ENCRYPTED SCAN ID
+###################################################################
+    def generate(self):
+        S = 8  # number of characters in the string.  
+        # call random.choices() string module to find the string in Uppercase + numeric data.  
+        ran = 'ac&@%!'+''.join(random.choices(string.ascii_uppercase + string.digits, k = S))    
+        x= str(ran)
+        return x
+
+
+###################################################################
+# GENERATE QR CODE
+###################################################################
+    def add_qr(self, name, scan_id):
+        input_data = scan_id
+        #Creating an instance of qrcode
+        qr = qrcode.QRCode(
+                version=1,
+                box_size=10,
+                border=5)
+        qr.add_data(input_data)
+        qr.make(fit=True)
+        img = qr.make_image(fill='black', back_color='white')
+        filename = f'qr_codes/{name}_qr.png'
+        img.save(filename)
+        storage.child(f"{name}/{name}_qr").put(filename)
+        qr_url = storage.child(f"{name}/{name}_qr").get_url(None)
+        # print(qr_url)
+        return qr_url
+
+###################################################################
+# LOG IN USER
+###################################################################       
     def sign_in(self):
         username = self.help.get_screen('login').ids.username.text
         password = self.help.get_screen('login').ids.password.text
@@ -167,33 +289,27 @@ class DemoApp(MDApp):
         else:
             self.help.get_screen('login').ids.status.text = 'Invalid credentials. Please try again.'
 
-    def delete_doc(self):
-        doc= self.help.get_screen('singledoc').ids.species.title
-        db.collection('Hoya').document(doc).delete()
-        self.swtchScrn()
-
+###################################################################
+# GET DOCUMENT LISTS FROM DATABASE
+###################################################################
     def search_list(self):
         async def search_list():
 
-            db= firestore.client()
             search=self.help.get_screen('collections').ids.search.text
-            docs = db.collection('Hoya').stream()
-            for doc in docs:
-                if search in doc.id:
+            all_docs = db.child("Hoya").get()
+            for i in all_docs.each():
+                name = i.key()
+                if search in name:
                     await asynckivy.sleep(0)
                     self.help.get_screen('collections').ids.box.add_widget(
-                        OneLineIcon(text= f'{doc.id}',
-                        # on_press= lambda x, value_for_pass=doc.id: self.passValue(value_for_pass),
+                        OneLineIcon(text= f'{name}',
                         on_release = lambda y: self.spin_dialog(),
-                        on_press= lambda x, value_for_pass=doc.id: self.passValue_thread(value_for_pass),
+                        on_press= lambda x, value_for_pass=name: self.passValue_thread(value_for_pass),
 
                         ))
         asynckivy.start(search_list())
     
 
-
-    def passValue_thread(self,*args):
-        threading.Thread(target=self.passValue, args = args).start()
 
     def search_callback(self, *args):
         '''A method that updates the state of your application
@@ -207,52 +323,25 @@ class DemoApp(MDApp):
 
         Clock.schedule_once(refresh_callback, 1)
 
-    def oks_qr(self):
-        myDate = self.help.get_screen('qr').ids.forem.text
-        doc_ref = db.collection('Hoya').document(myDate)
-        
+###################################################################
+# GET DATA FOR EACH DOCUMENT
+###################################################################
 
-        doc = doc_ref.get()
-        if doc.exists:
-            self.passValue(myDate)
-            print (myDate)
-            # bal = u'{}'.format(get_bal.to_dict()['Balance'])
-            # print(f'Document data: {doc.to_dict()}')
-        else:
-            print(u'No such document!')
-            self.show_no_doc_dialog()
-
-    def my_qr(self):
-        myDate = self.ids.forem.text
-        self.ids.link.add_widget(
-            MDRaisedButton( text = "Open link",
-            on_press = lambda x: webbrowser.open(myDate))
-        )     
-
-    def on_start(self):
-        self.search_list()
-        # self.on_qr()
-
+    def passValue_thread(self,*args):
+        threading.Thread(target=self.passValue, args = args).start()
 
     def passValue(self, *args):
-        
+
+
         args_str = ','.join(map(str,args))
-        doc_ref = db.collection('Hoya').document(args_str)
-        single_doc = doc_ref.get()
-        datos= f'{single_doc.to_dict()}'
-        # print(datos)
-        format_1=datos.strip("{}")
-        format_2=format_1.split(',')
-        # format_3=format_2.replace(" ' ", " ")
-        # print(format_2)
 
         icon = 'https://firebasestorage.googleapis.com/v0/b/pnri-demeter.appspot.com/o/flower.png?alt=media&token=3553abca-251f-42a3-b939-5d8eefc10a9a'
         passportData = ['Name','Date of Acquisition', 'Accession Origin', 'Project', 'Project Leader', 'Other Detals']
         morphology = ['Pollinium', 'Retinaculum', 'Caudicle Bulb Diameter', 'Translator']
 
-        img_url = doc_ref.get(field_paths={'img_url'}).to_dict().get('img_url')
-        qr_url= doc_ref.get(field_paths={'qr_url'}).to_dict().get('qr_url')
-        file_url= doc_ref.get(field_paths={'file_url'}).to_dict().get('file_url')
+        img_url = db.child("Hoya").child(args_str).child("img_url").get().val()
+        qr_url= db.child("Hoya").child(args_str).child("qr_url").get().val()
+        file_url= db.child("Hoya").child(args_str).child("file_url").get().val()
 
         screen2 = self.help.get_screen('singledoc')
         screen2.ids.datas.clear_widgets()
@@ -288,7 +377,6 @@ class DemoApp(MDApp):
 
         else:
             screen2.ids.img_url.source = img_url
-            # screen2.ids.image_url.text = img_url
 
         if qr_url is None or qr_url == '':
             screen2.ids.qr_url.source = icon
@@ -312,38 +400,23 @@ class DemoApp(MDApp):
                 )
             )
         
-        for i in range(len(format_2)):
+        passport_data = db.child("Hoya").child(args_str).get()
+        for datas in passport_data.each():
             screen2.ids.datas.add_widget(
                 OneLine(
-                    text=format_2[i]
+                    text=f"{datas.key()} : {datas.val()}"
                     # halign="center"
                 )
             )
-        # print(format_2[i])
         self.help.current = 'singledoc'    
         self.help.transition.direction = 'left'   
         self.dialog6.dismiss(force=True)
 
-
-
-
-    def swtchScrn(self,*args):
-        self.search_callback()
-        self.help.current = 'collections'
-        self.help.transition.direction = 'right'
-
-
-    def swtchScreen(self,screen,*args):
-        # self.refresh_callback()
-        self.help.current = screen
-        self.help.transition.direction = 'right'
-
-    def generate(self):
-        S = 8  # number of characters in the string.  
-        # call random.choices() string module to find the string in Uppercase + numeric data.  
-        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = S))    
-        x= str(ran)
-        return x
+###################################################################
+# UPLOAD DOCUMENT
+###################################################################
+    def upload_thread(self):
+        threading.Thread(target=(self.upload)).start()
 
     def upload(self):
         
@@ -398,16 +471,13 @@ class DemoApp(MDApp):
             'scan_id' : f'{scan_id}'
             }
 
-        db.collection('Hoya').document(f'{name}').set(data)
+        db.child('Hoya').child(f'{name}').set(data)
 
         self.dialog6.dismiss(force=True)
         toast("Document Saved Successfully")
         self.swtchScrn()
 
 
-
-    def upload_thread(self):
-        threading.Thread(target=(self.upload)).start()
 
     def add_img(self):
         root = tk.Tk()
@@ -425,77 +495,14 @@ class DemoApp(MDApp):
         # print(file)
         self.help.get_screen('uploaddoc').ids.input_12.text = file
 
-    def add_qr(self, name, scan_id):
-        input_data = scan_id
-        #Creating an instance of qrcode
-        qr = qrcode.QRCode(
-                version=1,
-                box_size=10,
-                border=5)
-        qr.add_data(input_data)
-        qr.make(fit=True)
-        img = qr.make_image(fill='black', back_color='white')
-        filename = f'qr_codes/{name}_qr.png'
-        img.save(filename)
-        storage.child(f"{name}/{name}_qr").put(filename)
-        qr_url = storage.child(f"{name}/{name}_qr").get_url(None)
-        # print(qr_url)
-        return qr_url
+###################################################################
+# QR CODE SCANNER
+###################################################################
+    def show_camscanner(self):
+        cam = self.help.get_screen('scanner').ids.cam
+        self.clock_event = Clock.schedule_interval(self.update, 1.0 /30)
+        cam.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
-    def show_donot_dialog(self):
-        if not self.dialog5:
-            self.dialog5 = MDDialog(
-                text= "Uploading Document... DO NOT CLICK ANYWHERE",
-            )
-        self.dialog5.open()
-
-    def show_no_doc_dialog(self):
-        if not self.dialog2:
-            self.dialog2 = MDDialog(
-                text= "File does not exist!",
-                buttons=[
-                    MDRaisedButton(text="OK", 
-                    on_press = lambda x :self.dialog2.dismiss(force=True)
-                    )
-                ],
-            )
-        self.dialog2.open()
-
-    def show_simple_dialog(self):
-        if not self.dialog3:
-            self.dialog3 = MDDialog(
-                type="custom",
-                content_cls=Content(),
-            )
-        self.dialog3.open()
-
-    def spin_dialog(self):
-        if not self.dialog6:
-            self.dialog6 = MDDialog(
-                type="custom",
-                content_cls=ContentSpin(),
-            )
-        self.dialog6.open()
-
-
-    def delete_dialog(self):
-        if not self.dialog4:
-            self.dialog4 = MDDialog(
-                text= "Are you sure you want to delete?",
-                buttons=[
-                    MDFlatButton(
-                        text = 'Cancel',
-                        on_press = lambda x: self.dialog4.dismiss(force=True)),
-                    MDRaisedButton(
-                        text="OK", 
-                        on_press = lambda x : self.delete_doc(),
-                        on_release = lambda x: self.dialog4.dismiss(force=True)
-
-                    )
-                ],
-            )
-        self.dialog4.open()
-            
     def update(self, dt):
         cam = self.help.get_screen('scanner').ids.cam
         ret, frame = cam.capture.read()
@@ -507,10 +514,17 @@ class DemoApp(MDApp):
             for barcode in decode(frame):
                 
                 myData = barcode.data.decode('utf-8')
-                qr_ref = db.collection('Hoya')
-                docs = qr_ref.where('scan_id', '==', f'{myData}').get()
-                for doc in docs:
-                    self.help.get_screen('qr').ids.forem.text = doc.id
+                sub = 'ac&@%!'
+                if sub in myData:
+                    hey = db.child("Hoya").order_by_child("scan_id").equal_to(myData).get()
+                    for user in hey.each():
+                        self.help.get_screen('qr').ids.forem.text = user.key()  
+                else:
+                    self.help.get_screen('qr').ids.forem.text = "NO DOCUMENT AVAILABLE"
+                # qr_ref = db.collection('Hoya')
+                # docs = qr_ref.where('scan_id', '==', f'{myData}').get()
+                # for doc in docs:
+                #     self.help.get_screen('qr').ids.forem.text = doc.id
                 self.help.current = 'qr'
                 # webbrowser.open(myData)
                 pts = np.array([barcode.polygon], np.int32)
@@ -528,11 +542,34 @@ class DemoApp(MDApp):
             image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             cam.texture = image_texture
 
-    def show_cam(self):
-        cam = self.help.get_screen('scanner').ids.cam
-        self.clock_event = Clock.schedule_interval(self.update, 1.0 /30)
-        cam.capture = cv2.VideoCapture(1,cv2.CAP_DSHOW)
 
+###################################################################
+# OPEN SCANNED DOCUMENT TO APP
+###################################################################
+    def oks_qr(self):
+        myDate = self.help.get_screen('qr').ids.forem.text
+        try:
+            self.passValue(myDate)
+        except Exception as e:
+            toast("No Such Document!")
+
+    def oks_thread(self):
+        threading.Thread(target=(self.oks_qr)).start()
+
+###################################################################
+# OPEN SCANNED LINK TO WEBSITE
+###################################################################
+    def my_qr(self):
+        myDate = self.ids.forem.text
+        self.ids.link.add_widget(
+            MDRaisedButton( text = "Open link",
+            on_press = lambda x: webbrowser.open(myDate))
+        )     
+
+
+###################################################################
+# CAMERA
+###################################################################
     def capture(self):
         self.help.get_screen('image').ids.cap_img.source = 'captured_img/image.png'
         self.swtchScreen('image')
@@ -540,6 +577,7 @@ class DemoApp(MDApp):
     def save_img(self):
         self.help.get_screen('uploaddoc').ids.input_11.text = 'captured_img/image.png'
         self.swtchScreen('uploaddoc') 
+
 
     def show_camie(self):
         # disabled cam, naglalag kasi
@@ -573,13 +611,23 @@ class DemoApp(MDApp):
                     on_press = lambda x: cv2.imwrite(f'captured_img/image.png', frame),
                     on_release = lambda x : self.capture())
             )
+    def cam_start(self):
+        camruler.start()
+
+    def camruler_thread(self):
+        threading.Thread(target=(self.cam_start)).start()
+        # self.dialog6.dismiss(force=True)
+
+    def on_start(self):
+        self.search_list()
+        # self.on_qr()
 
     def build(self):
         # screen =Screen()
         
         self.title='Demeter'
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "DeepPurple"   
+        self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_palette = "LightGreen"   
 
         self.help = Builder.load_file('main.kv')
         # screen.add_widget(self.help)

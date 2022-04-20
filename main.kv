@@ -17,7 +17,7 @@ ScreenManager:
 <LoginScreen>:
     name: 'login'
     MDScreen:
-        md_bg_color: app.purple
+        md_bg_color: app.dark2
     # MDBoxLayout:
     #     orientation: "vertical"
     #     padding:dp(25)
@@ -67,7 +67,7 @@ ScreenManager:
 <MenuScreen>:
     name: 'menu'
     MDScreen:
-        md_bg_color: app.purple
+        md_bg_color: app.dark2
         on_enter:
             print('sfadseryeryetf')
     MDBoxLayout:
@@ -102,9 +102,9 @@ ScreenManager:
                 subtext:"Morphometric Analysis"
                 items_count: ""
                 on_press: 
-                    # root.manager.current = 'camera'
-                    # root.manager.transition.direction = "left"
-                    app.show_camie()
+                    root.manager.current = 'camera'
+                    root.manager.transition.direction = "left"
+                    # app.show_camie()
 
             ElementCard:
                 image:"images/flower.png"
@@ -124,7 +124,7 @@ ScreenManager:
                 on_press: 
                     root.manager.current = 'scanner'
                     root.manager.transition.direction = "left"
-                    app.show_cam()
+                    app.show_camscanner()
 
             ElementCard:
                 image: "images/gener.png"
@@ -154,7 +154,7 @@ ScreenManager:
                     root.manager.transition.direction = "left"
 
 <ElementCard@MDCard>:
-    md_bg_color:69/255,55/255,86/255,1
+    md_bg_color:app.dark1
     padding:dp(15)
     spacing:dp(15)
     radius:dp(25)
@@ -184,7 +184,7 @@ ScreenManager:
 <CameraScreen>:
     name: 'camera'
     MDScreen:
-        md_bg_color:56/255,40/255,81/255,1
+        md_bg_color:app.dark2
 
 
     MDIconButton:
@@ -193,31 +193,38 @@ ScreenManager:
         on_press: 
             root.manager.current = 'menu'
             root.manager.transition.direction = "right"
-    MDBoxLayout:
-        # size_hint_y:.25
-        padding:dp(15)
-        KivyCamera:
-            id: camie
-            size_hint: 1,1
-            pos_hint: {"x":0,"top":1} 
-            # on_parent:
-            #     print('sfadtysf')
     MDFloatingActionButton:
         id: capture
         text: 'Capture'
         pos_hint: {'center_x':0.5,'center_y':0.2}
+        on_press: 
+            app.spin_dialog()
+            app.camruler_thread()
+    # MDBoxLayout:
+    #     # size_hint_y:.25
+    #     padding:dp(15)
+    #     KivyCamera:
+    #         id: camie
+    #         size_hint: 1,1
+    #         pos_hint: {"x":0,"top":1} 
+    #         # on_parent:
+    #         #     print('sfadtysf')
+    # MDFloatingActionButton:
+    #     id: capture
+    #     text: 'Capture'
+    #     pos_hint: {'center_x':0.5,'center_y':0.2}
         # on_press: 
         #     app.camie()
 
 <ImageScreen>:
     name: 'image'
     MDScreen:
-        md_bg_color:56/255,40/255,81/255,1
+        md_bg_color:app.dark2
     MDBoxLayout:
         # size_hint_y:.25
         orientation: "vertical"  
         MDToolbar:
-            md_bg_color:56/255,40/255,81/255,1
+            md_bg_color:app.dark2
             title: "Image"
             type_height: "small"
             left_action_items: [["arrow-left", lambda x : app.swtchScreen('menu')]]
@@ -229,7 +236,7 @@ ScreenManager:
 <CollectionsScreen>:
     name: 'collections'
     MDScreen:
-        md_bg_color:56/255,40/255,81/255,1
+        md_bg_color:app.dark2
         MDIconButton:
             icon:'arrow-left'
             pos_hint: {'center_x':0.06,'center_y':0.95}
@@ -304,7 +311,7 @@ ScreenManager:
 <ScannerScreen>:
     name: 'scanner'
     MDScreen:
-        md_bg_color:56/255,40/255,81/255,1
+        md_bg_color:app.dark2
     MDBoxLayout:
         # size_hint_y:.25
         padding:dp(15)
@@ -331,7 +338,7 @@ ScreenManager:
 <QRScreen>:
     name: 'qr'
     MDScreen:
-        md_bg_color:56/255,40/255,81/255,1
+        md_bg_color:app.dark2
 
     MDIconButton:
         icon:'arrow-left'
@@ -360,7 +367,8 @@ ScreenManager:
         text: 'Go to document'
         pos_hint: {'center_x':0.5,'center_y':0.4}  
         on_press:
-            app.oks_qr()
+            app.spin_dialog()
+            app.oks_thread()
             
 
 <GeneratorScreen>:
@@ -392,7 +400,7 @@ ScreenManager:
 <SettingsScreen>:
     name: 'settings'
     MDScreen:
-        md_bg_color:56/255,40/255,81/255,1
+        md_bg_color:app.dark2
     MDLabel:
         text: 'Settings'
         halign: 'center'
@@ -411,11 +419,11 @@ ScreenManager:
 <SingleDocScreen>:
     name: 'singledoc'
     MDScreen:
-        md_bg_color:56/255,40/255,81/255,1
+        md_bg_color:app.dark2
     MDBoxLayout:
         orientation: "vertical"
         MDToolbar:
-            md_bg_color:56/255,40/255,81/255,1
+            md_bg_color:app.dark2
             id: species
             title: "Example Tabs"
             type_height: "small"
@@ -496,15 +504,15 @@ ScreenManager:
     name: 'uploaddoc'
 
     MDScreen:
-        md_bg_color:56/255,40/255,81/255,1
+        md_bg_color:app.dark2
     MDBoxLayout:
         orientation: "vertical"
         MDToolbar:
-            md_bg_color:56/255,40/255,81/255,1
+            md_bg_color:app.dark2
             title: "Upload Data"
             type_height: "small"
             left_action_items: [["arrow-left", lambda x : app.swtchScreen('collections')]]
-            
+            right_action_items: [["eraser", lambda x : root.eraser()]]
         MDTabs:
             id: tabs
             background_color: rgba(0,0,0,0)
