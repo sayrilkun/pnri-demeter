@@ -466,18 +466,19 @@ ScreenManager:
                                 
             Tab:
                 title: "Morphology"
+                # MDBoxLayout:
+                #     orientation: "vertical"
+                # MDLabel:
+                #     id: header
+                #     text: " "
+                #     # halign: "center"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.95}
                 MDBoxLayout:
+                    padding:dp(15)
                     orientation: "vertical"
-                    MDLabel:
-                        id: header
-                        text: " "
-                        halign: "center"
-                    MDBoxLayout:
-                        padding:dp(15)
-                        orientation: "vertical"
-                        ScrollView:
-                            MDList:
-                                id:dataso
+                    ScrollView:
+                        MDList:
+                            id:dataso
             Tab:
                 title: "QR Code"
                 MDBoxLayout:

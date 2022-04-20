@@ -339,12 +339,14 @@ class DemoApp(MDApp):
         passportData = ['Name','Date of Acquisition', 'Accession Origin', 'Project', 'Project Leader', 'Other Detals']
         morphology = ['Pollinium', 'Retinaculum', 'Caudicle Bulb Diameter', 'Translator']
 
-        img_url = db.child("Hoya").child(args_str).child("img_url").get().val()
-        qr_url= db.child("Hoya").child(args_str).child("qr_url").get().val()
-        file_url= db.child("Hoya").child(args_str).child("file_url").get().val()
+        img_url = db.child("Hoya").child(args_str).child("urls").child("img_url").get().val()
+        qr_url= db.child("Hoya").child(args_str).child("urls").child("qr_url").get().val()
+        file_url= db.child("Hoya").child(args_str).child("urls").child("file_url").get().val()
 
         screen2 = self.help.get_screen('singledoc')
         screen2.ids.datas.clear_widgets()
+        screen2.ids.dataso.clear_widgets()
+
 
         def open(url):
             if url is None or url == '':
@@ -387,20 +389,21 @@ class DemoApp(MDApp):
 
         screen2.ids['species'].title = args_str
         # screen2.ids['datos'].text = datos
-        screen2.ids['header'].text = f"Morphometric Analysis of {args_str}"
+        # screen2.ids['header'].text = f"Morphometric Analysis of {args_str}"
 
 
 
         # for complete documents / to separeate passport data and morphology
-        for i in range(3):
+        morphology = db.child("Hoya").child(args_str).child("Morphology").get()
+        for datas in morphology.each():
             screen2.ids.dataso.add_widget(
                 OneLine(
-                    text=f'hehe{[i]}'
+                    text=f"{datas.key()} : {datas.val()}"
                     # halign="center"
                 )
             )
         
-        passport_data = db.child("Hoya").child(args_str).get()
+        passport_data = db.child("Hoya").child(args_str).child("Passport Data").get()
         for datas in passport_data.each():
             screen2.ids.datas.add_widget(
                 OneLine(
@@ -455,20 +458,26 @@ class DemoApp(MDApp):
         qr_url = self.add_qr(name, scan_id)
 
         data = { 
-            'Name': f'{name}',
-            'Date Acquired':f'{dateAcq}',
-            'Accession Origin': f'{accOrg}',
-            'Project': f'{project}',
-            'Project Leader': f'{prjLdr}',
-            'Other Details': f'{otherDtls}',
-            'Pollinium': f'{pollinium}',
-            'Retinaculum': f'{retinaculum}',
-            'Translator': f'{translator}',
-            'Caudicle Bulb Diameter': f'{caudicle}',
-            'img_url' : f'{img_url}',
-            'file_url' : f'{file_url}',
-            'qr_url': f'{qr_url}',
-            'scan_id' : f'{scan_id}'
+            "Passport Data": {
+                'Name': f'{name}',
+                'Date Acquired':f'{dateAcq}',
+                'Accession Origin': f'{accOrg}',
+                'Project': f'{project}',
+                'Project Leader': f'{prjLdr}',
+                'Other Details': f'{otherDtls}',
+            },
+            "Morphology":{
+                'Pollinium': f'{pollinium}',
+                'Retinaculum': f'{retinaculum}',
+                'Translator': f'{translator}',
+                'Caudicle Bulb Diameter': f'{caudicle}',
+            },
+            "urls":{
+                'img_url' : f'{img_url}',
+                'file_url' : f'{file_url}',
+                'qr_url': f'{qr_url}',
+                'scan_id' : f'{scan_id}'
+            }
             }
 
         db.child('Hoya').child(f'{name}').set(data)
