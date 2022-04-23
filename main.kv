@@ -15,6 +15,44 @@ ScreenManager:
     UploadDocScreen:
     EditScreen:
 
+<Content>:
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "60dp"
+
+    MDList:
+        OneLineListItem:
+            text: "Edit"
+        OneLineListItem:
+            text: "Delete"
+
+<ContentSpin>:
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "50dp"
+
+    MDSpinner:
+        id: spinner
+        size_hint: None, None
+        size: dp(46), dp(86)
+        pos_hint: {'center_x': .5, 'center_y': .7}
+        # active: check.active
+        
+<ContentEdit>
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "120dp"
+
+    MDTextField:
+        id:title
+        hint_text: "Title"
+
+    MDTextField:
+        id:desc
+        hint_text: "Description"
 
 # <LoginScreen>:
 #     name: 'login'
@@ -690,40 +728,3 @@ ScreenManager:
 #                                 # on_press: 
 #                                 #     app.spin_dialog()
 #                                 #     app.upload_thread()
-<Content>:
-    orientation: "vertical"
-    spacing: "12dp"
-    size_hint_y: None
-    height: "60dp"
-
-    MDList:
-        OneLineListItem:
-            text: "Edit"
-        OneLineListItem:
-            text: "Delete"
-
-<ContentSpin>:
-    orientation: "vertical"
-    spacing: "12dp"
-    size_hint_y: None
-    height: "50dp"
-
-    MDSpinner:
-        id: spinner
-        size_hint: None, None
-        size: dp(46), dp(86)
-        pos_hint: {'center_x': .5, 'center_y': .7}
-        # active: check.active
-<ContentEdit>
-    orientation: "vertical"
-    spacing: "12dp"
-    size_hint_y: None
-    height: "120dp"
-
-    MDTextField:
-        id:title
-        hint_text: "Title"
-
-    MDTextField:
-        id:desc
-        hint_text: "Description"

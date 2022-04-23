@@ -23,14 +23,6 @@ firebase = pyrebase.initialize_app(config)
 storage= firebase.storage()
 db= firebase.database()
 
-# class ContentEdit(BoxLayout):
-#     pass
-
-# class ContentSpin(BoxLayout):
-#     pass
-# class Content(BoxLayout):
-#     pass
-
 class KivyCamera(Image):
     pass
 
@@ -55,13 +47,6 @@ class EditScreen(Screen):
     
 class CameraScreen(Screen):
     pass
-
-    # def on_enter(self):
-    #     x=DemoApp()
-    #     cam = self.ids.camie
-    #     self.clock_event = Clock.schedule_interval(x.object_detection, 1.0 /60)
-    #     cam.capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-
     # def on_leave(self, *args):
     #     cam = self.ids.camie
     #     cam.capture.release()
@@ -534,7 +519,7 @@ class DemoApp(MDApp):
         qr.add_data(input_data)
         qr.make(fit=True)
         img = qr.make_image(fill='black', back_color='white')
-        filename = f'qr_codes/{name}_qr.png'
+        filename = f'assets/qr_codes/{name}_qr.png'
         img.save(filename)
         storage.child(f"{name}/{name}_qr").put(filename)
         qr_url = storage.child(f"{name}/{name}_qr").get_url(None)
@@ -617,11 +602,11 @@ class DemoApp(MDApp):
 # CAMERA
 ###################################################################
     def capture(self):
-        self.help.get_screen('image').ids.cap_img.source = 'captured_img/image.png'
+        self.help.get_screen('image').ids.cap_img.source = 'assets/captured_img/image.png'
         self.swtchScreen('image')
 
     def save_img(self):
-        self.help.get_screen('uploaddoc').ids.input_11.text = 'captured_img/image.png'
+        self.help.get_screen('uploaddoc').ids.input_11.text = 'assets/captured_img/image.png'
         self.swtchScreen('uploaddoc') 
 
 
@@ -654,7 +639,7 @@ class DemoApp(MDApp):
                     icon = 'camera-iris', 
                     md_bg_color="#f8d7e3", 
                     text_color = "#211c29",
-                    on_press = lambda x: cv2.imwrite(f'captured_img/image.png', frame),
+                    on_press = lambda x: cv2.imwrite(f'assets/captured_img/image.png', frame),
                     on_release = lambda x : self.capture())
             )
     def cam_start(self):
