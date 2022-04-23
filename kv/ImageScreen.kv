@@ -1,0 +1,25 @@
+<ImageScreen>:
+    name: 'image'
+    MDScreen:
+        md_bg_color:app.dark2
+    MDBoxLayout:
+        # size_hint_y:.25
+        orientation: "vertical"  
+        MDToolbar:
+            md_bg_color:app.dark2
+            title: "Image"
+            type_height: "small"
+            left_action_items: [["arrow-left", lambda x : app.swtchScreen('menu')]]
+            right_action_items: [["content-save", lambda x : app.save_img()],["refresh", lambda x: app.show_camie()]]
+        Image: 
+            id: cap_img
+            source: "images/flower.png"
+<OneLineIcon>:            
+    IconLeftWidget:
+        icon: 'flower-poppy'
+        # on_press:
+        #     print("dsfdfsdasdfasdgasgasfasfsadgadsfasd")
+    IconRightWidget:
+        icon: 'dots-vertical'
+        on_press:
+            app.show_simple_dialog()

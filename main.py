@@ -1,47 +1,9 @@
-import cv2
-import firebase_admin
-import numpy as np
-import random
+from utils.imports import *
+
 import os
-import webbrowser
-import tkinter as tk
-import pyrebase
-import qrcode
-import string
-import threading
-
-import utils.frame_capture as frame_capture
-import utils.frame_draw as frame_draw
-# import utils.camruler as camruler
-
-from kivy.clock import mainthread
-from kivymd.toast import toast
-from datetime import datetime
-from kivymd.uix.snackbar import Snackbar
-from kivymd.uix.button import MDIconButton, MDFloatingActionButton
-from tkinter import filedialog
-from kivy.properties import StringProperty
-
-from kivymd.app import MDApp
-from kivy.lang.builder import Builder
-from kivy.uix.screenmanager import Screen
-from kivy.uix.image import Image
-from kivy.clock import Clock
-from kivy.graphics.texture import Texture
-from kivy.core.window import Window
-from pyzbar.pyzbar import decode
-from kivymd.uix.list import IRightBodyTouch, OneLineListItem, OneLineIconListItem, OneLineAvatarIconListItem
-from kivymd.uix.list import IconLeftWidget
-from kivymd.uix.floatlayout import MDFloatLayout
-from kivymd.uix.tab import MDTabsBase
-from kivymd.utils import asynckivy
-from kivymd.uix.button import MDFlatButton, MDRaisedButton, MDRoundFlatButton
-from kivymd.uix.dialog import MDDialog
-from kivy.uix.image import AsyncImage
-from kivy.uix.behaviors import ButtonBehavior
-from kivymd.uix.label import MDLabel
-from kivy.uix.boxlayout import BoxLayout
-
+arr = os.listdir("kv/")
+for i in arr:
+    Builder.load_file(f'kv/{i}')
 
 Window.size=(400,700)
 
@@ -61,10 +23,13 @@ firebase = pyrebase.initialize_app(config)
 storage= firebase.storage()
 db= firebase.database()
 
-class ContentSpin(BoxLayout):
-    pass
-class Content(BoxLayout):
-    pass
+# class ContentEdit(BoxLayout):
+#     pass
+
+# class ContentSpin(BoxLayout):
+#     pass
+# class Content(BoxLayout):
+#     pass
 
 class KivyCamera(Image):
     pass
@@ -85,6 +50,9 @@ class LoginScreen(Screen):
 class MenuScreen(Screen):
     pass
 
+class EditScreen(Screen):
+    pass
+    
 class CameraScreen(Screen):
     pass
 
@@ -168,58 +136,26 @@ class DemoApp(MDApp):
 ###################################################################
 # DIALOGS
 ###################################################################
+    dialog = None
+    def form_dialog(self):
+        dialog.form_dialog(self)
+
     dialog2= None
-    dialog3= None
-    dialog4= None
-    dialog6= None
-
-
     def show_no_doc_dialog(self):
-        if not self.dialog2:
-            self.dialog2 = MDDialog(
-                text= "File does not exist!",
-                buttons=[
-                    MDRaisedButton(text="OK", 
-                    on_press = lambda x :self.dialog2.dismiss(force=True)
-                    )
-                ],
-            )
-        self.dialog2.open()
+        dialog.show_no_doc_dialog(self)
 
+    dialog3= None
     def show_simple_dialog(self):
-        if not self.dialog3:
-            self.dialog3 = MDDialog(
-                type="custom",
-                content_cls=Content(),
-            )
-        self.dialog3.open()
+        dialog.show_simple_dialog(self)
 
+    dialog4= None
     def delete_dialog(self):
-        if not self.dialog4:
-            self.dialog4 = MDDialog(
-                text= "Are you sure you want to delete?",
-                buttons=[
-                    MDFlatButton(
-                        text = 'Cancel',
-                        on_press = lambda x: self.dialog4.dismiss(force=True)),
-                    MDRaisedButton(
-                        text="OK", 
-                        on_press = lambda x : self.delete_doc(),
-                        on_release = lambda x: self.dialog4.dismiss(force=True)
+        dialog.delete_dialog(self)
 
-                    )
-                ],
-            )
-        self.dialog4.open()
-
+    dialog6= None    
     @mainthread
     def spin_dialog(self):
-        if not self.dialog6:
-            self.dialog6 = MDDialog(
-                type="custom",
-                content_cls=ContentSpin(),
-            )
-        self.dialog6.open()
+        dialog.spin_dialog(self)
 
 ###################################################################
 # SWITCH SCREEN
@@ -244,36 +180,7 @@ class DemoApp(MDApp):
         self.swtchScrn()
 
 
-###################################################################
-# GENERATE ENCRYPTED SCAN ID
-###################################################################
-    def generate(self):
-        S = 8  # number of characters in the string.  
-        # call random.choices() string module to find the string in Uppercase + numeric data.  
-        ran = 'ac&@%!'+''.join(random.choices(string.ascii_uppercase + string.digits, k = S))    
-        x= str(ran)
-        return x
 
-
-###################################################################
-# GENERATE QR CODE
-###################################################################
-    def add_qr(self, name, scan_id):
-        input_data = scan_id
-        #Creating an instance of qrcode
-        qr = qrcode.QRCode(
-                version=1,
-                box_size=10,
-                border=5)
-        qr.add_data(input_data)
-        qr.make(fit=True)
-        img = qr.make_image(fill='black', back_color='white')
-        filename = f'qr_codes/{name}_qr.png'
-        img.save(filename)
-        storage.child(f"{name}/{name}_qr").put(filename)
-        qr_url = storage.child(f"{name}/{name}_qr").get_url(None)
-        # print(qr_url)
-        return qr_url
 
 ###################################################################
 # LOG IN USER
@@ -416,6 +323,108 @@ class DemoApp(MDApp):
         self.dialog6.dismiss(force=True)
 
 ###################################################################
+# UPLOAD/EDIT STATE
+###################################################################
+    def change_state(self, num):
+        global states
+        states = num
+        # return state
+    
+    def check_state(self):
+
+        if states == 0:
+            self.switchScreen('uploaddoc')
+        elif states == 1:
+            # self.switchScreen('edit')
+            pass
+        else:
+            toast('Invalid')
+
+    def upload_state(self):
+        self.change_state(0)
+        self.check_state()
+
+    def edit_state(self):
+        self.change_state(1)
+        self.check_state()
+###################################################################
+# EDIT DOCUMENT
+###################################################################
+
+    def edit_doc(self):
+        passportData = ['Name','Date of Acquisition', 'Accession Origin', 'Project', 'Project Leader', 'Other Detals']
+        # morphology = ['Pollinium', 'Retinaculum', 'Caudicle Bulb Diameter', 'Translator']
+
+        self.swtchScreen('edit')
+        doc= self.help.get_screen('singledoc').ids.species.title
+
+        passport_data = db.child("Hoya").child(doc).child("Passport Data").get()
+        for datas in passport_data.each():
+            self.help.get_screen('edit').ids.passpo.add_widget(
+                MDTextField(
+                    # id= "Adf",
+                    hint_text= datas.key(),
+                    text = datas.val(),
+                    size_hint = (.75,0.08),
+                    mode = "rectangle",
+                    color_mode = 'accent',
+                    pos_hint = {"center_x": 0.5}
+                )
+            )
+            
+
+        morphology = db.child("Hoya").child(doc).child("Morphology").get()
+        for datas in morphology.each():
+            self.help.get_screen('edit').ids.morph.add_widget(
+                MDTextField(
+                    # id = datas.key(),
+                    hint_text= datas.key(),
+                    text = datas.val(),
+                    size_hint = (.75,0.08),
+                    mode = "rectangle",
+                    color_mode = 'accent',
+                    pos_hint = {"center_x": 0.5}
+                )
+            )
+
+    def update_doc(self):
+        pass
+        # img_url = db.child("Hoya").child(args_str).child("urls").child("img_url").get().val()
+        # qr_url= db.child("Hoya").child(args_str).child("urls").child("qr_url").get().val()
+        # file_url= db.child("Hoya").child(args_str).child("urls").child("file_url").get().val()
+        # self.swtchScreen('edit')
+
+        # name = self.help.get_screen('uploaddoc').ids.input_1.text
+        # dateAcq = self.help.get_screen('uploaddoc').ids.input_2.text
+        # accOrg = self.help.get_screen('uploaddoc').ids.input_3.text
+        # project = self.help.get_screen('uploaddoc').ids.input_4.text
+        # prjLdr = self.help.get_screen('uploaddoc').ids.input_5.text
+        # otherDtls = self.help.get_screen('uploaddoc').ids.input_6.text
+        # pollinium = self.help.get_screen('uploaddoc').ids.input_7.text
+        # retinaculum = self.help.get_screen('uploaddoc').ids.input_8.text
+        # translator = self.help.get_screen('uploaddoc').ids.input_9.text
+        # caudicle = self.help.get_screen('uploaddoc').ids.input_10.text
+        # image = self.help.get_screen('uploaddoc').ids.input_11.text
+        # file = self.help.get_screen('uploaddoc').ids.input_12.text
+    dict = {}
+    def add_textfields(self):
+        self.dialog.dismiss(force=True)
+        # self.dialog.content_cls.ids.title.text, self.dialog.content_cls.ids.desc.text = "",""
+
+        title = self.dialog.content_cls.ids.title.text
+        desc = self.dialog.content_cls.ids.desc.text
+        self.dict[f'{title}'] = f'{desc}'
+        print(self.dict)
+        self.help.get_screen('edit').ids.morph.add_widget(
+        MDTextField(hint_text= title,
+                    text = desc,
+                    size_hint = (.75,0.08),
+                    mode = "rectangle",
+                    color_mode = 'accent',
+                    pos_hint = {"center_x": 0.5}
+        ))
+
+###################################################################
 # UPLOAD DOCUMENT
 ###################################################################
     def upload_thread(self):
@@ -476,8 +485,8 @@ class DemoApp(MDApp):
                 'img_url' : f'{img_url}',
                 'file_url' : f'{file_url}',
                 'qr_url': f'{qr_url}',
-                'scan_id' : f'{scan_id}'
-            }
+            },
+            'scan_id' : f'{scan_id}'
             }
 
         db.child('Hoya').child(f'{name}').set(data)
@@ -485,8 +494,6 @@ class DemoApp(MDApp):
         self.dialog6.dismiss(force=True)
         toast("Document Saved Successfully")
         self.swtchScrn()
-
-
 
     def add_img(self):
         root = tk.Tk()
@@ -503,6 +510,36 @@ class DemoApp(MDApp):
         print(file)
         # print(file)
         self.help.get_screen('uploaddoc').ids.input_12.text = file
+
+###################################################################
+# GENERATE ENCRYPTED SCAN ID
+###################################################################
+    def generate(self):
+        S = 8  # number of characters in the string.  
+        # call random.choices() string module to find the string in Uppercase + numeric data.  
+        ran = 'ac&@%!'+''.join(random.choices(string.ascii_uppercase + string.digits, k = S))    
+        x= str(ran)
+        return x
+
+###################################################################
+# GENERATE QR CODE
+###################################################################
+    def add_qr(self, name, scan_id):
+        input_data = scan_id
+        #Creating an instance of qrcode
+        qr = qrcode.QRCode(
+                version=1,
+                box_size=10,
+                border=5)
+        qr.add_data(input_data)
+        qr.make(fit=True)
+        img = qr.make_image(fill='black', back_color='white')
+        filename = f'qr_codes/{name}_qr.png'
+        img.save(filename)
+        storage.child(f"{name}/{name}_qr").put(filename)
+        qr_url = storage.child(f"{name}/{name}_qr").get_url(None)
+        # print(qr_url)
+        return qr_url
 
 ###################################################################
 # QR CODE SCANNER
@@ -628,10 +665,15 @@ class DemoApp(MDApp):
         # self.dialog6.dismiss(force=True)
 
     def on_start(self):
+        # print(self.change_state(9))
+        # self.change_state(7)
+        # print (states)
+
         self.search_list()
         # self.on_qr()
 
     def build(self):
+
         # screen =Screen()
         
         self.title='Demeter'

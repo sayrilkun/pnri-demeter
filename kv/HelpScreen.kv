@@ -1,0 +1,13 @@
+<HelpScreen>:
+    name: 'help'
+    MDLabel:
+        text: 'Help'
+        halign: 'center'
+        valign: 'top'
+
+    MDIconButton:
+        icon:'arrow-left'
+        pos_hint: {'center_x':0.1,'center_y':0.95}
+        on_press: 
+            root.manager.current = 'menu'
+            root.manager.transition.direction = "right"

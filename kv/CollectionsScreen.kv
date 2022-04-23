@@ -1,0 +1,64 @@
+<CollectionsScreen>:
+    name: 'collections'
+    MDScreen:
+        md_bg_color:app.dark2
+        MDIconButton:
+            icon:'arrow-left'
+            pos_hint: {'center_x':0.06,'center_y':0.95}
+            on_press: 
+                root.manager.current = 'menu'
+                root.manager.transition.direction = "right"
+        
+        MDIconButton:
+            icon:'refresh'
+            pos_hint: {'center_x':0.94,'center_y':0.95}
+            on_press: 
+                app.search_callback()
+
+    MDBoxLayout:
+        orientation:'vertical'
+
+        MDBoxLayout:
+            size_hint_y:.25
+            padding:dp(15)
+            MDBoxLayout:
+                padding:dp(15)
+                orientation:"vertical"
+                MDLabel:
+                    text:"Collections"
+                    font_style:"H6"
+                    halign: "center"
+                # MDBoxLayout:
+                #     adaptive_size:True
+                #     spacing:dp(10)
+
+                MDTextFieldRound:
+                    id:search
+                    hint_text: 'Press enter to search'
+                    on_text_validate: app.search_callback()
+                    icon_right: 'close'
+                    # on_press:
+                    #     print("dsfsdf")
+        MDBoxLayout:
+            # size_hint_y:.25
+            padding:dp(15)
+            MDScrollViewRefreshLayout:
+                id: refresh_layout
+                refresh_callback: app.search_callback
+                root_layout: root
+                # MDList:
+                #     id: box
+                #     # on_parent: app.set_list()
+
+                MDGridLayout:
+                    id: box
+                    adaptive_height: True
+                    cols: 1
+
+    MDFloatingActionButton:
+        icon: "plus"
+        md_bg_color: app.theme_cls.primary_color
+        pos_hint: {"center_x": .85, "center_y": .1}
+        on_press: 
+            root.manager.current = 'uploaddoc'
+            root.manager.transition.direction = "left"

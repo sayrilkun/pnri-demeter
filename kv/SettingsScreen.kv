@@ -1,0 +1,18 @@
+<SettingsScreen>:
+    name: 'settings'
+    MDScreen:
+        md_bg_color:app.dark2
+    MDLabel:
+        text: 'Settings'
+        halign: 'center'
+
+    MDIconButton:
+        icon:'arrow-left'
+        pos_hint: {'center_x':0.1,'center_y':0.95}
+        on_press: 
+            root.manager.current = 'menu'
+            root.manager.transition.direction = "right"
+
+    MDRectangleFlatButton:
+        text: 'Scan'
+        pos_hint: {'center_x':0.5,'center_y':0.2}

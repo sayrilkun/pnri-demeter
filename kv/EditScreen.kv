@@ -1,0 +1,45 @@
+<EditScreen>:
+    name: 'edit'
+
+    MDScreen:
+        md_bg_color:rgba(0,0,0,1)
+    MDBoxLayout:
+        orientation: "vertical"
+        MDToolbar:
+            md_bg_color:app.dark2
+            title: "Edit Data"
+            type_height: "small"
+            left_action_items: [["arrow-left", lambda x : app.swtchScreen('collections')]]
+            right_action_items: [["eraser", lambda x : root.eraser()],["plus", lambda x : app.form_dialog()],["file-upload", lambda x : x]]
+        MDTabs:
+            id: tabs
+            background_color: app.dark2
+            tab_hint_x: True
+            Tab:
+                title: "Passport Data"
+                MDBoxLayout: # Add main container.
+                    orientation: "vertical"
+                    padding: dp(10)
+                    spacing: dp(5)
+                    ScrollView:
+                        MDBoxLayout: # Add all text fields in this container.
+                            id: passpo
+                            orientation: "vertical"
+                            adaptive_height: True # Grow vertically.
+            Tab:
+                title: "Morphology"
+                MDBoxLayout: # Add main container.
+                    orientation: "vertical"
+                    padding: dp(10)
+                    spacing: dp(5)
+                    ScrollView:
+                        MDBoxLayout: # Add all text fields in this container.
+                            id: morph
+                            orientation: "vertical"
+                            adaptive_height: True # Grow vertically.
+                            MDRaisedButton:
+                                pos_hint: {'center_x':0.5, 'center_y':0.1}
+                                text: 'Save'
+                                # on_press: 
+                                #     app.spin_dialog()
+                                #     app.upload_thread()

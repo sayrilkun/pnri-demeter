@@ -1,0 +1,34 @@
+<QRScreen>:
+    name: 'qr'
+    MDScreen:
+        md_bg_color:app.dark2
+
+    MDIconButton:
+        icon:'arrow-left'
+        pos_hint: {'center_x':0.1,'center_y':0.95}
+        on_press: 
+            root.manager.current = 'menu'
+            root.manager.transition.direction = "right"
+
+
+
+    MDLabel:
+        pos_hint: {'center_y':0.5}
+        halign: 'center'
+        text: 'hgvj'
+        id: forem
+        theme_text_color: "Custom"
+        text_color: 0, 1, 0, 1        
+
+
+    MDRaisedButton:
+        id: link
+        text: 'Go to link'
+        pos_hint: {'center_x':0.5,'center_y':0.2}        
+    MDRaisedButton:
+        # id: link
+        text: 'Go to document'
+        pos_hint: {'center_x':0.5,'center_y':0.4}  
+        on_press:
+            app.spin_dialog()
+            app.oks_thread()

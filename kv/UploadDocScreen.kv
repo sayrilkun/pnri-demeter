@@ -1,0 +1,141 @@
+<UploadDocScreen>
+    name: 'uploaddoc'
+
+    MDScreen:
+        md_bg_color:app.dark2
+    MDBoxLayout:
+        orientation: "vertical"
+        MDToolbar:
+            md_bg_color:app.dark2
+            title: "Upload Data"
+            type_height: "small"
+            left_action_items: [["arrow-left", lambda x : app.swtchScreen('collections')]]
+            right_action_items: [["eraser", lambda x : root.eraser()],["file-upload", lambda x : x]]
+        MDTabs:
+            id: tabs
+            background_color: rgba(0,0,0,0)
+            tab_hint_x: True
+            Tab:
+                title: "Passport Data"
+                
+                MDTextField:
+                    id: input_1
+                    hint_text: "Name"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.95}
+                    size_hint: .75,0.08
+                    color_mode: 'custom'
+                    mode: "rectangle"
+                    required: True
+                    helper_text_mode: "on_error"
+                    line_color_focus: 1, 1, 1, 1
+                MDTextField:
+                    id: input_2
+                    hint_text: "Date Acquired"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.85}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_3
+                    hint_text: "Accession Origin"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.75}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_4
+                    hint_text: "Project"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.65}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_5
+                    hint_text: "Project Leader"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.55}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_6
+                    hint_text: "Other Details"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.39}
+                    size_hint: .75,0.20
+                    mode: "rectangle"
+                    multiline: True
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_11
+                    hint_text: "Upload Image"
+                    pos_hint: {"center_x": 0.37, "center_y": 0.24}
+                    size_hint: .50,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_12
+                    hint_text: "Upload File"
+                    pos_hint: {"center_x": 0.37, "center_y": 0.14}
+                    size_hint: .50,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDRaisedButton:
+                    text: "Browse"
+                    pos_hint: {"center_x": 0.8, "center_y": 0.233}
+                    size_hint: .22,0.065
+                    on_press: 
+                        app.add_img()
+
+                MDRaisedButton:
+                    text: "Browse"
+                    pos_hint: {"center_x": 0.8, "center_y": 0.133}
+                    size_hint: .22,0.065
+                    on_press:
+                        app.add_file()
+
+            Tab:
+                title: "Morphology"
+                MDTextField:
+                    id: input_7
+                    hint_text: "Pollinium"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.95}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_8
+                    hint_text: "Retinaculum"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.85}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_9
+                    hint_text: "Translator"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.75}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDTextField:
+                    id: input_10
+                    hint_text: "Caudicle Bulb Diameter"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.65}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+                MDRaisedButton:
+                    pos_hint: {'center_x':0.5, 'center_y':0.1}
+                    text: 'Save'
+                    on_press: 
+                        app.spin_dialog()
+                        app.upload_thread()
