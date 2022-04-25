@@ -6,7 +6,6 @@ for i in arr:
     Builder.load_file(f'kv/{i}')
 
 Window.size=(400,700)
-
 config = {
     "apiKey": "AIzaSyBH3WOpmUdPj0vGIpneswkW2CS8fFidlXw",
     "authDomain": "pnri-demeter.firebaseapp.com",
@@ -56,6 +55,10 @@ class DemoApp(MDApp):
     light1 = 60/255, 179/255, 113/255, 1
     dark2 = 46/255, 139/255, 87/255, 1
 
+    arr = [] 
+    paginated = ()
+    page_length = 0
+    page_number = 0
 ###################################################################
 # DIALOGS
 ###################################################################
@@ -84,7 +87,8 @@ class DemoApp(MDApp):
 # SWITCH SCREEN
 ###################################################################
     def swtchScrn(self,*args):
-        self.search_callback()
+        self.page_number = 0
+        self.refresh_callback()
         self.help.current = 'collections'
         self.help.transition.direction = 'right'
 
@@ -102,44 +106,90 @@ class DemoApp(MDApp):
         db.child("Hoya").child(doc).remove()
         self.swtchScrn()
 
-
-
-
-###################################################################
-# LOG IN USER
-###################################################################       
-    def sign_in(self):
-        username = self.help.get_screen('login').ids.username.text
-        password = self.help.get_screen('login').ids.password.text
-
-        if username == 'admin' and password == '12345':
-            self.help.current = 'menu'
-            self.help.transition.direction = 'right'
-        
-        else:
-            self.help.get_screen('login').ids.status.text = 'Invalid credentials. Please try again.'
-
 ###################################################################
 # GET DOCUMENT LISTS FROM DATABASE
 ###################################################################
-    def search_list(self):
-        async def search_list():
 
+
+    def next_button(self):
+        self.page_number+=1
+        print(self.page_number)
+        if self.page_number < self.page_length:
+            self.list_callback()
+            self.help.get_screen('collections').ids.page_number.text = f"Page {self.page_number+1} of {self.page_length}"
+            self.help.get_screen('collections').ids.page_numberad.text = f"{(self.page_number+1)*10} out of {len(self.arr)}"
+
+        else:
+            self.page_number-=1
+
+    def prev_button(self):
+        self.page_number-=1
+        print(self.page_number)
+        if self.page_number >= 0:
+            self.list_callback()
+            self.help.get_screen('collections').ids.page_number.text = f"Page {self.page_number+1} of {self.page_length}"
+            self.help.get_screen('collections').ids.page_numberad.text = f"{(self.page_number+1)*10} of {len(self.arr)}"
+
+        else:
+            self.page_number+=1   
+
+    def pop_array(self):
+        all_docs = db.child("Hoya").get()
+        for i in all_docs.each():
+            self.arr.append(i.key())
+        def chunk(it, size):
+            it = iter(it)
+            return iter(lambda: tuple(islice(it, size)), ())
+        self.paginated = list(chunk(self.arr,10))
+        self.page_length = len(self.paginated)
+        self.help.get_screen('collections').ids.page_number.text = f"Page {self.page_number+1} of {self.page_length}"
+        self.help.get_screen('collections').ids.page_numberad.text = f"{(self.page_number+1)*10} of {len(self.arr)}"
+        
+    def list_array(self):
+        async def search_list():
             search=self.help.get_screen('collections').ids.search.text
-            all_docs = db.child("Hoya").get()
-            for i in all_docs.each():
-                name = i.key()
-                if search in name:
+            for i in self.paginated[self.page_number]:
+                if search in i:
                     await asynckivy.sleep(0)
                     self.help.get_screen('collections').ids.box.add_widget(
-                        OneLineIcon(text= f'{name}',
+                        OneLineIcon(text= f'{i}',
+                        # on_touch_down = lambda x: print("adfads")
                         on_release = lambda y: self.spin_dialog(),
-                        on_press= lambda x, value_for_pass=name: self.passValue_thread(value_for_pass),
+                        on_press= lambda x, value_for_pass=i: self.passValue_thread(value_for_pass),
 
-                        ))
-        asynckivy.start(search_list())
-    
+                        ))  
+        asynckivy.start(search_list())  
 
+    def search_array(self):
+        async def search_list():
+            search=self.help.get_screen('collections').ids.search.text
+            if search == '':
+                self.list_callback()
+            else:    
+                for i in self.arr:
+                    if search in i:
+                        await asynckivy.sleep(0)
+                        self.help.get_screen('collections').ids.box.add_widget(
+                            OneLineIcon(text= f'{i}',
+                            # on_touch_down = lambda x: print("adfads")
+                            on_release = lambda y: self.spin_dialog(),
+                            on_press= lambda x, value_for_pass=i: self.passValue_thread(value_for_pass),
+
+                            ))
+                        
+        asynckivy.start(search_list())    
+
+    def list_callback(self, *args):
+        '''A method that updates the state of your application
+        while the spinner remains on the screen.'''
+
+        def refresh_callback(interval):
+            self.help.get_screen('collections').ids.box.clear_widgets()
+            self.list_array()
+            self.help.get_screen('collections').ids.refresh_layout.refresh_done()
+            self.tick = 0
+
+        Clock.schedule_once(refresh_callback, 1)
 
     def search_callback(self, *args):
         '''A method that updates the state of your application
@@ -147,12 +197,25 @@ class DemoApp(MDApp):
 
         def refresh_callback(interval):
             self.help.get_screen('collections').ids.box.clear_widgets()
-            self.search_list()
+            self.search_array()
             self.help.get_screen('collections').ids.refresh_layout.refresh_done()
             self.tick = 0
 
         Clock.schedule_once(refresh_callback, 1)
 
+    def refresh_callback(self, *args):
+        '''A method that updates the state of your application
+        while the spinner remains on the screen.'''
+
+        def refresh_callback(interval):
+            self.help.get_screen('collections').ids.box.clear_widgets()
+            self.arr = []
+            self.pop_array()
+            self.list_array()
+            self.help.get_screen('collections').ids.refresh_layout.refresh_done()
+            self.tick = 0
+
+        Clock.schedule_once(refresh_callback, 1)
 ###################################################################
 # GET DATA FOR EACH DOCUMENT
 ###################################################################
@@ -415,7 +478,9 @@ class DemoApp(MDApp):
         if name == '':
             toast("Name Cannot Be Blank!")
             self.dialog6.dismiss(force=True)
-
+        elif name in self.arr:
+            toast("Unable to upload! Name exists in database!")
+            self.dialog6.dismiss(force=True)
         else:
             db.child('Hoya').child(f'{name}').set(data)
             self.dialog6.dismiss(force=True)
@@ -592,12 +657,9 @@ class DemoApp(MDApp):
         # self.dialog6.dismiss(force=True)
 
     def on_start(self):
-        # print(self.change_state(9))
-        # self.change_state(7)
-        # print (states)
+        self.pop_array()
+        self.list_array()
 
-        self.search_list()
-        # self.on_qr()
 
     def build(self):
         generator = GeneratorScreen()

@@ -4,20 +4,26 @@
         md_bg_color:app.dark2
         MDLabel:
             id: page_number
-            text:"Collections"
+            text:""
             font_style:"H6"
             halign: "center"
             pos_hint: {'center_x':0.5,'center_y':0.95}
-
+        MDLabel:
+            id: page_numberad
+            text:"adfa"
+            font_style:"Subtitle2"
+            halign: "center"
+            pos_hint: {'center_x':0.5,'center_y':0.92}
         MDIconButton:
             icon:'page-first'
             pos_hint: {'center_x':0.3,'center_y':0.95}
-        
+            on_press: 
+                app.prev_button()
         MDIconButton:
             icon:'page-last'
             pos_hint: {'center_x':0.7,'center_y':0.95}
-            # on_press: 
-            #     app.search_callback()
+            on_press: 
+                app.next_button()
         MDIconButton:
             icon:'arrow-left'
             pos_hint: {'center_x':0.06,'center_y':0.95}
@@ -29,7 +35,7 @@
             icon:'refresh'
             pos_hint: {'center_x':0.94,'center_y':0.95}
             on_press: 
-                app.search_callback()
+                app.refresh_callback()
 
     MDBoxLayout:
         orientation:'vertical'
@@ -53,7 +59,7 @@
             padding:dp(15)
             MDScrollViewRefreshLayout:
                 id: refresh_layout
-                refresh_callback: app.search_callback
+                refresh_callback: app.refresh_callback
                 root_layout: root
                 # MDList:
                 #     id: box

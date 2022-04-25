@@ -9,6 +9,12 @@ import qrcode
 import string
 import threading
 
+from itertools import islice
+from tkinter import filedialog
+from pyzbar.pyzbar import decode
+from datetime import datetime
+
+
 import utils.frame_capture as frame_capture
 import utils.frame_draw as frame_draw
 import utils.dialog as dialog
@@ -17,10 +23,8 @@ import utils.collections as col
 
 from kivy.clock import mainthread
 from kivymd.toast import toast
-from datetime import datetime
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.button import MDIconButton, MDFloatingActionButton
-from tkinter import filedialog
 from kivy.properties import StringProperty
 
 from kivymd.app import MDApp
@@ -30,7 +34,6 @@ from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.graphics.texture import Texture
 from kivy.core.window import Window
-from pyzbar.pyzbar import decode
 from kivymd.uix.list import IRightBodyTouch, OneLineListItem, OneLineIconListItem, OneLineAvatarIconListItem
 from kivymd.uix.list import IconLeftWidget
 from kivymd.uix.floatlayout import MDFloatLayout
