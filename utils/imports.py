@@ -12,6 +12,7 @@ import threading
 import utils.frame_capture as frame_capture
 import utils.frame_draw as frame_draw
 import utils.dialog as dialog
+import utils.collections as col
 # import utils.camruler as camruler
 
 from kivy.clock import mainthread
@@ -43,3 +44,16 @@ from kivymd.uix.label import MDLabel
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.textfield import MDTextField
 
+from screens.GeneratorScreen import GeneratorScreen
+from screens.LoginScreen import LoginScreen
+from screens.MenuScreen import MenuScreen
+from screens.ImageScreen import ImageScreen
+from screens.CollectionsScreen import CollectionsScreen
+from screens.HelpScreen import HelpScreen
+from screens.SettingsScreen import SettingsScreen
+from screens.SingleDocScreen import SingleDocScreen
+from screens.EditScreen import EditScreen
+from screens.CameraScreen import CameraScreen
+from screens.UploadDocScreen import UploadDocScreen
+from screens.ScannerScreen import ScannerScreen
+from screens.QRScreen import QRScreen

@@ -36,69 +36,7 @@ class OneLineIcon(OneLineAvatarIconListItem):
     pass
 
 class OneLine(OneLineListItem):
-    divider = None
-class LoginScreen(Screen):
-    pass
-class MenuScreen(Screen):
-    pass
-
-class EditScreen(Screen):
-    pass
-    
-class CameraScreen(Screen):
-    pass
-    # def on_leave(self, *args):
-    #     cam = self.ids.camie
-    #     cam.capture.release()
-    #     cam.clear_widgets()
-        # self.clock_event.cancel()
-
-class ImageScreen(Screen):
-    pass
-
-class CollectionsScreen(Screen):
-    pass
-
-class ScannerScreen(Screen):
-    def on_leave(self, *args):
-        cam = self.ids.cam
-        cam.capture.release()
-        cam.clear_widgets()
-        # self.clock_event.cancel()
-
-class QRScreen(Screen):
-    # self.help.transition.direction = 'left'
-    def on_pre_enter(self):
-    #     x=DemoApp()
-    #     x.on_qr()
-        myDate = self.ids.forem.text
-        self.ids.link.add_widget(
-            MDRaisedButton( text = "Open link",
-            on_press = lambda x: webbrowser.open(myDate))
-        )     
-
-class GeneratorScreen(Screen):
-    pass
-
-class HelpScreen(Screen):
-    pass
-
-class SettingsScreen(Screen):
-    pass
-
-class SingleDocScreen(Screen):
-    pass
-
-
-class UploadDocScreen(Screen):
-    def on_enter(self):
-        for i in range(1,13):
-            self.manager.get_screen('uploaddoc').ids[f'input_{i}'].text = ""
-
-    def eraser(self):
-        for i in range(1,13):
-            self.manager.get_screen('uploaddoc').ids[f'input_{i}'].text = ""
-        
+    divider = None    
 class Tab(MDFloatLayout, MDTabsBase):
     pass
 
@@ -335,7 +273,7 @@ class DemoApp(MDApp):
 ###################################################################
 # EDIT DOCUMENT
 ###################################################################
-
+        
     def edit_doc(self):
         passportData = ['Name','Date of Acquisition', 'Accession Origin', 'Project', 'Project Leader', 'Other Detals']
         # morphology = ['Pollinium', 'Retinaculum', 'Caudicle Bulb Diameter', 'Translator']
@@ -474,11 +412,15 @@ class DemoApp(MDApp):
             'scan_id' : f'{scan_id}'
             }
 
-        db.child('Hoya').child(f'{name}').set(data)
+        if name == '':
+            toast("Name Cannot Be Blank!")
+            self.dialog6.dismiss(force=True)
 
-        self.dialog6.dismiss(force=True)
-        toast("Document Saved Successfully")
-        self.swtchScrn()
+        else:
+            db.child('Hoya').child(f'{name}').set(data)
+            self.dialog6.dismiss(force=True)
+            toast("Document Saved Successfully")
+            self.swtchScrn()
 
     def add_img(self):
         root = tk.Tk()
@@ -658,8 +600,19 @@ class DemoApp(MDApp):
         # self.on_qr()
 
     def build(self):
-
-        # screen =Screen()
+        generator = GeneratorScreen()
+        login= LoginScreen()
+        menu= MenuScreen()
+        camera= CameraScreen()
+        image= ImageScreen()
+        col= CollectionsScreen()
+        scan = ScannerScreen()
+        qr = QRScreen()
+        help=HelpScreen()
+        settings=SettingsScreen()
+        single=SingleDocScreen()
+        upload = UploadDocScreen()
+        edit = EditScreen()
         
         self.title='Demeter'
         self.theme_cls.theme_style = "Light"

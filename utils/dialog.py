@@ -2,6 +2,7 @@ from kivymd.uix.dialog import MDDialog
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.button import MDFlatButton, MDRaisedButton, MDRoundFlatButton
 
+
 class ContentEdit(BoxLayout):
     pass
 

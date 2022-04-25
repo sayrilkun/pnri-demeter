@@ -1,5 +1,17 @@
-import utils.frame_capture as frame_capture
-import utils.frame_draw as frame_draw
-import utils.camruler as camruler
+arr = [
+    "LoginScreen.py",
+    "MenuScreen.py",
+    "CameraScreen.py",
+    "ImageScreen.py",
+    "CollectionsScreen.py",
+    "ScannerScreen.py",
+    "QRScreen.py",
+    "HelpScreen.py",
+    "SettingsScreen.py",
+    "SingleDocScreen.py",
+    "UploadDocScreen.py",
+    "EditScreen.py",
+]
 
-camruler.cam_start()
+for i in arr:
+    f = open(f"screens/{i}", "x")

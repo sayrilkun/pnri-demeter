@@ -2,6 +2,22 @@
     name: 'collections'
     MDScreen:
         md_bg_color:app.dark2
+        MDLabel:
+            id: page_number
+            text:"Collections"
+            font_style:"H6"
+            halign: "center"
+            pos_hint: {'center_x':0.5,'center_y':0.95}
+
+        MDIconButton:
+            icon:'page-first'
+            pos_hint: {'center_x':0.3,'center_y':0.95}
+        
+        MDIconButton:
+            icon:'page-last'
+            pos_hint: {'center_x':0.7,'center_y':0.95}
+            # on_press: 
+            #     app.search_callback()
         MDIconButton:
             icon:'arrow-left'
             pos_hint: {'center_x':0.06,'center_y':0.95}
@@ -24,13 +40,6 @@
             MDBoxLayout:
                 padding:dp(15)
                 orientation:"vertical"
-                MDLabel:
-                    text:"Collections"
-                    font_style:"H6"
-                    halign: "center"
-                # MDBoxLayout:
-                #     adaptive_size:True
-                #     spacing:dp(10)
 
                 MDTextFieldRound:
                     id:search
