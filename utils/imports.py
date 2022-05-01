@@ -18,7 +18,6 @@ from datetime import datetime
 import utils.frame_capture as frame_capture
 import utils.frame_draw as frame_draw
 import utils.dialog as dialog
-import utils.collections as col
 # import utils.camruler as camruler
 
 from kivy.clock import mainthread

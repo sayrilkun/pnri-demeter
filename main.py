@@ -6,6 +6,7 @@ for i in arr:
     Builder.load_file(f'kv/{i}')
 
 Window.size=(400,700)
+global config
 config = {
     "apiKey": "AIzaSyBH3WOpmUdPj0vGIpneswkW2CS8fFidlXw",
     "authDomain": "pnri-demeter.firebaseapp.com",
