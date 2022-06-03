@@ -46,7 +46,7 @@ from kivymd.uix.label import MDLabel
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.textfield import MDTextField
 
-from screens.GeneratorScreen import GeneratorScreen
+from screens.IdentifierScreen import IdentifierScreen
 from screens.LoginScreen import LoginScreen
 from screens.MenuScreen import MenuScreen
 from screens.ImageScreen import ImageScreen

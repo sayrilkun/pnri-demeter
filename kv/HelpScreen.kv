@@ -1,5 +1,9 @@
 <HelpScreen>:
     name: 'help'
+
+    MDScreen:
+        md_bg_color:app.dark2
+        
     MDLabel:
         text: 'Help'
         halign: 'center'
@@ -11,3 +15,5 @@
         on_press: 
             root.manager.current = 'menu'
             root.manager.transition.direction = "right"
+
+    

@@ -1,14 +1,14 @@
 from kivy.uix.screenmanager import Screen
-from utils.pyre import db
-from itertools import islice
-from kivymd.utils import asynckivy
-from kivymd.uix.list import OneLineAvatarIconListItem, OneLineListItem
-from kivy.clock import Clock
-from screens.SingleDocScreen import SingleDocScreen
-import utils.dialog as dialog
-import webbrowser
-from kivymd.uix.button import MDFlatButton, MDRaisedButton, MDRoundFlatButton
-import threading
+# from utils.pyre import db
+# from itertools import islice
+# from kivymd.utils import asynckivy
+# from kivymd.uix.list import OneLineAvatarIconListItem, OneLineListItem
+# from kivy.clock import Clock
+# from screens.SingleDocScreen import SingleDocScreen
+# import utils.dialog as dialog
+# import webbrowser
+# from kivymd.uix.button import MDFlatButton, MDRaisedButton, MDRoundFlatButton
+# import threading
 
 class CollectionsScreen(Screen):
     pass

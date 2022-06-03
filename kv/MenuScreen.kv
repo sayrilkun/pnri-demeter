@@ -12,17 +12,8 @@
             MDBoxLayout:
                 orientation:"vertical"
                 MDLabel:
-                    text:"Dashboard"
+                    text:"Demeter"
                     font_style:"H4"
-                MDBoxLayout:
-                    adaptive_size:True
-                    spacing:dp(10)
-                    MDLabel:
-                        text:"Home"
-                        text_size:None,None
-                        adaptive_width:True
-                    MDIcon:
-                        icon:'chevron-down'
 
         MDGridLayout:
             size_hint_y:.75
@@ -31,7 +22,7 @@
             spacing:dp(15)
             
             ElementCard:
-                image:"assets/images/cams.png"
+                image:"assets/images/cams-1.png"
                 text:"Camera"
                 subtext:"Morphometric Analysis"
                 items_count: ""
@@ -61,12 +52,12 @@
                     app.show_camscanner()
 
             ElementCard:
-                image: "assets/images/gener.png"
-                text:"QR Code Generator"
+                image: "assets/images/iden.png"
+                text:"Species Identifier"
                 items_count:""
                 subtext:""
                 on_press: 
-                    root.manager.current = 'generator'
+                    root.manager.current = 'iden'
                     root.manager.transition.direction = "left"
                     
             ElementCard:

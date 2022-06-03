@@ -63,6 +63,7 @@ class DemoApp(MDApp):
 ###################################################################
 # DIALOGS
 ###################################################################
+
     dialog = None
     def form_dialog(self):
         dialog.form_dialog(self)
@@ -393,6 +394,7 @@ class DemoApp(MDApp):
         # caudicle = self.help.get_screen('uploaddoc').ids.input_10.text
         # image = self.help.get_screen('uploaddoc').ids.input_11.text
         # file = self.help.get_screen('uploaddoc').ids.input_12.text
+
     dict = {}
     def add_textfields(self):
         self.dialog.dismiss(force=True)
@@ -415,12 +417,10 @@ class DemoApp(MDApp):
 # UPLOAD DOCUMENT
 ###################################################################
     def upload_thread(self):
+        self.spin_dialog()
         threading.Thread(target=(self.upload)).start()
 
     def upload(self):
-        
-        # self.show_donot_dialog()
-
         input_fields = ['name','dateAcq','accOrg','project','prjLdr','otherDtls',
                         'pollinium','retinaculum','translator', 'caudicle', 'image', 'file']
             
@@ -430,10 +430,18 @@ class DemoApp(MDApp):
         project = self.help.get_screen('uploaddoc').ids.input_4.text
         prjLdr = self.help.get_screen('uploaddoc').ids.input_5.text
         otherDtls = self.help.get_screen('uploaddoc').ids.input_6.text
-        pollinium = self.help.get_screen('uploaddoc').ids.input_7.text
-        retinaculum = self.help.get_screen('uploaddoc').ids.input_8.text
-        translator = self.help.get_screen('uploaddoc').ids.input_9.text
-        caudicle = self.help.get_screen('uploaddoc').ids.input_10.text
+
+        pl = self.help.get_screen('uploaddoc').ids.input_7.text
+        pw = self.help.get_screen('uploaddoc').ids.input_8.text
+        rl = self.help.get_screen('uploaddoc').ids.input_9.text
+        shl = self.help.get_screen('uploaddoc').ids.input_10.text
+        wl = self.help.get_screen('uploaddoc').ids.input_13.text
+        hl = self.help.get_screen('uploaddoc').ids.input_14.text
+        el = self.help.get_screen('uploaddoc').ids.input_15.text
+        tal = self.help.get_screen('uploaddoc').ids.input_16.text
+        td = self.help.get_screen('uploaddoc').ids.input_17.text
+        cb = self.help.get_screen('uploaddoc').ids.input_18.text
+
         image = self.help.get_screen('uploaddoc').ids.input_11.text
         file = self.help.get_screen('uploaddoc').ids.input_12.text
 
@@ -463,10 +471,17 @@ class DemoApp(MDApp):
                 'Other Details': f'{otherDtls}',
             },
             "Morphology":{
-                'Pollinium': f'{pollinium}',
-                'Retinaculum': f'{retinaculum}',
-                'Translator': f'{translator}',
-                'Caudicle Bulb Diameter': f'{caudicle}',
+                'Name': f'{name}',
+                'Pollinium Length': f'{pl}',
+                "Pollinium Widest": f'{pw}',
+                "Retinaculum Length": f'{rl}',
+                "Shoulder": f'{shl}',
+                "Waist": f'{wl}',
+                "Hips": f'{hl}',
+                "Extension": f'{el}',
+                "Translator Arm Length": f'{tal}',
+                "Translator Depth": f'{td}',
+                'Caudicle Bulb Diameter': f'{cb}',
             },
             "urls":{
                 'img_url' : f'{img_url}',
@@ -540,7 +555,7 @@ class DemoApp(MDApp):
     def show_camscanner(self):
         cam = self.help.get_screen('scanner').ids.cam
         self.clock_event = Clock.schedule_interval(self.update, 1.0 /30)
-        cam.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+        cam.capture = cv2.VideoCapture('http://192.168.1.2:4747/video',cv2.CAP_DSHOW)
 
     def update(self, dt):
         cam = self.help.get_screen('scanner').ids.cam
@@ -660,23 +675,12 @@ class DemoApp(MDApp):
     def on_start(self):
         self.pop_array()
         self.list_array()
+        # GeneratorScreen.panget(self)
+        # CollectionsScreen.pop_array(self)
+        # CollectionsScreen.list_array(self)
 
 
     def build(self):
-        generator = GeneratorScreen()
-        login= LoginScreen()
-        menu= MenuScreen()
-        camera= CameraScreen()
-        image= ImageScreen()
-        col= CollectionsScreen()
-        scan = ScannerScreen()
-        qr = QRScreen()
-        help=HelpScreen()
-        settings=SettingsScreen()
-        single=SingleDocScreen()
-        upload = UploadDocScreen()
-        edit = EditScreen()
-        
         self.title='Demeter'
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "LightGreen"   

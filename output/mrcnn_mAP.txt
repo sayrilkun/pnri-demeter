@@ -1,0 +1,90 @@
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  229.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:  118.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  3
+the actual length of the predicted vect is :  3
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 1.0
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  215.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:  102.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  6
+the actual length of the predicted vect is :  6
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 1.0
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  254.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:  149.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  9
+the actual length of the predicted vect is :  9
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 1.0
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  201.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:   94.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  12
+the actual length of the predicted vect is :  12
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 1.0
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  248.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:  144.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  15
+the actual length of the predicted vect is :  15
+Average precision of this image :  0.8333333333333333
+The actual mean average precision for the whole images 0.9666666666666666
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  249.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:  145.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  18
+the actual length of the predicted vect is :  18
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 0.9722222222222222
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  237.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:  128.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  21
+the actual length of the predicted vect is :  21
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 0.9761904761904762
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  184.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:   80.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  24
+the actual length of the predicted vect is :  24
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 0.9791666666666666
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  252.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:  147.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  27
+the actual length of the predicted vect is :  27
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 0.9814814814814814
+Processing 1 images
+image                    shape: (1024, 1024, 3)       min:    0.00000  max:  197.00000  uint8
+molded_images            shape: (1, 1024, 1024, 3)    min: -123.70000  max:   92.10000  float64
+image_metas              shape: (1, 15)               min:    0.00000  max: 1024.00000  int32
+anchors                  shape: (1, 261888, 4)        min:   -0.35390  max:    1.29134  float32
+the actual length of the ground truth vect is :  30
+the actual length of the predicted vect is :  30
+Average precision of this image :  1.0
+The actual mean average precision for the whole images 0.9833333333333332
