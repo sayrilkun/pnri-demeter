@@ -70,6 +70,31 @@
                     color_mode: 'accent'
 
                 MDTextField:
+                    id: input_7
+                    hint_text: "Status"
+                    pos_hint: {"center_x": 0.5, "center_y": 0.23}
+                    size_hint: .75,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+
+            Tab:
+                title: "Morphology"
+                ScrollView:
+                    MDGridLayout:
+                        id: box
+                        adaptive_height: True
+                        cols: 1    
+
+                MDRaisedButton:
+                    text: 'add sample'
+                    pos_hint: {"center_x": 0.5, "center_y": 0.23}
+                    on_press:
+                        app.show_dialog()
+
+            Tab:
+                title: "Additional Files"
+                MDTextField:
                     id: input_11
                     hint_text: "Upload Image"
                     pos_hint: {"center_x": 0.37, "center_y": 0.24}
@@ -99,88 +124,101 @@
                     on_press:
                         app.add_file()
 
-            Tab:
-                title: "Morphology"
-                MDTextField:
-                    id: input_7
-                    hint_text: "Pollinium Length"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.95}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_8
-                    hint_text: "Pollinium Widest"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.87}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_9
-                    hint_text: "Retinaculum Length"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.79}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_10
-                    hint_text: "Shoulder"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.71}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_13
-                    hint_text: "Waist"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.63}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_14
-                    hint_text: "Hips"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.55}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_15
-                    hint_text: "Extension"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.47}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_16
-                    hint_text: "Translator Arm Length"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.39}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
 
 
-                MDTextField:
-                    id: input_17
-                    hint_text: "Translator Depth"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.31}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
 
 
-                MDTextField:
-                    id: input_18
-                    hint_text: "Caudicle Bulb Diameter"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.23}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
+
+
+
+
+
+
+
+
+
+
+
+                # MDTextField:
+                #     id: input_7
+                #     hint_text: "Pollinium Length"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.95}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+                # MDTextField:
+                #     id: input_8
+                #     hint_text: "Pollinium Widest"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.87}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+                # MDTextField:
+                #     id: input_9
+                #     hint_text: "Retinaculum Length"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.79}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+                # MDTextField:
+                #     id: input_10
+                #     hint_text: "Shoulder"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.71}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+                # MDTextField:
+                #     id: input_13
+                #     hint_text: "Waist"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.63}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+                # MDTextField:
+                #     id: input_14
+                #     hint_text: "Hips"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.55}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+                # MDTextField:
+                #     id: input_15
+                #     hint_text: "Extension"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.47}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+                # MDTextField:
+                #     id: input_16
+                #     hint_text: "Translator Arm Length"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.39}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+
+                # MDTextField:
+                #     id: input_17
+                #     hint_text: "Translator Depth"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.31}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
+
+
+                # MDTextField:
+                #     id: input_18
+                #     hint_text: "Caudicle Bulb Diameter"
+                #     pos_hint: {"center_x": 0.5, "center_y": 0.23}
+                #     size_hint: .75,0.075
+                #     mode: "rectangle"
+                #     color_mode: 'accent'
                     
 

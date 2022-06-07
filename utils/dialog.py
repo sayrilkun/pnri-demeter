@@ -1,7 +1,31 @@
 from kivymd.uix.dialog import MDDialog
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.button import MDFlatButton, MDRaisedButton, MDRoundFlatButton
+from kivy.properties import ObjectProperty
+from kivymd.uix.list import TwoLineListItem
 
+class TwoLine(TwoLineListItem):
+    pass
+
+class Morph(BoxLayout):
+    confirm_check_in_list=ObjectProperty()
+    def check_conflicts(self,morph, args_str):
+        self.ids.confirm_check_in_list.clear_widgets()
+
+        self.ids.confirm_check_in_list.add_widget(
+            TwoLine(text=args_str,
+                    secondary_text='Sample Name',
+            )
+        )        
+        for key,value in morph['Morphology'][args_str].items():
+            self.ids.confirm_check_in_list.add_widget(
+                TwoLine(text=value,
+                        secondary_text=key,
+                )
+            )
+
+class Sample(BoxLayout):
+    pass
 
 class ContentEdit(BoxLayout):
     pass
@@ -83,3 +107,39 @@ def form_dialog(self):
         )
     self.dialog.open()
 
+def show_morph(self, morph, *args):
+    args_str = ','.join(map(str,args))
+    if not self.dialog7:
+        self.dialog7 = MDDialog(
+            title="Sample",
+            content_cls=Morph(),
+            type="custom",
+
+        )
+    self.dialog7.content_cls.check_conflicts(morph,args_str)
+    self.dialog7.open()
+
+    
+def show_dialog(self):
+
+
+    if not self.dialog8:
+        self.dialog8 = MDDialog(
+            title="Add Sample",
+            type="custom",
+            content_cls=Sample(),
+            buttons=[
+                MDFlatButton(
+                    text="CANCEL",
+                    theme_text_color="Custom",
+                    on_press= lambda x: self.dialog8.dismiss(force=True)
+                ),
+                MDFlatButton(
+                    text="OK",
+                    theme_text_color="Custom",
+                    on_press= lambda x: self.puppy(),
+                    on_release= lambda y: self.dialog8.dismiss(force=True)                      
+                ),
+            ],
+        )
+    self.dialog8.open()

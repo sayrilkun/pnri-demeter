@@ -8,96 +8,30 @@
             md_bg_color:app.dark2
             title: "Upload Data"
             type_height: "small"
-            left_action_items: [["arrow-left", lambda x : app.swtchScreen('collections')]]
+            left_action_items: [["arrow-left", lambda x : app.swtchScreen('menu')]]
             # right_action_items: [["eraser", lambda x : root.eraser()]]
         MDTabs:
             id: tabs
             background_color: rgba(0,0,0,0)
             tab_hint_x: True
             Tab:
-                title: "Input Morphology Data"
-                MDTextField:
-                    id: input_7
-                    hint_text: "Pollinium Length"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.95}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
+                title: "Morphology"
+                ScrollView:
+                    MDGridLayout:
+                        id: box
+                        adaptive_height: True
+                        cols: 1    
 
-                MDTextField:
-                    id: input_8
-                    hint_text: "Pollinium Widest"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.87}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
+                MDRaisedButton:
+                    text: 'add sample'
+                    pos_hint: {"center_x": 0.25, "center_y": 0.23}
+                    on_press:
+                        app.show_dialog()
 
-                MDTextField:
-                    id: input_9
-                    hint_text: "Retinaculum Length"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.79}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
+                MDRaisedButton:
+                    text: 'identify'
+                    pos_hint: {"center_x": 0.75, "center_y": 0.23}
+                    on_press:
+                        app.createTable()
 
-                MDTextField:
-                    id: input_10
-                    hint_text: "Shoulder"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.71}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_13
-                    hint_text: "Waist"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.63}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_14
-                    hint_text: "Hips"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.55}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_15
-                    hint_text: "Extension"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.47}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-                MDTextField:
-                    id: input_16
-                    hint_text: "Translator Arm Length"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.39}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-
-                MDTextField:
-                    id: input_17
-                    hint_text: "Translator Depth"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.31}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-
-                MDTextField:
-                    id: input_18
-                    hint_text: "Caudicle Bulb Diameter"
-                    pos_hint: {"center_x": 0.5, "center_y": 0.23}
-                    size_hint: .75,0.075
-                    mode: "rectangle"
-                    color_mode: 'accent'
-
-
-                    
-
+                        # app.identify(app.morph)

@@ -23,6 +23,12 @@ firebase = pyrebase.initialize_app(config)
 storage= firebase.storage()
 db= firebase.database()
 
+# global morph
+# morph  = {
+#         "Morphology":{
+#         }
+#     }
+
 class KivyCamera(Image):
     pass
 
@@ -35,12 +41,19 @@ class IconLeftSampleWidget(IRightBodyTouch, MDIconButton):
 class OneLineIcon(OneLineAvatarIconListItem):
     pass
 
+class ThreeLineIcon(ThreeLineAvatarIconListItem):
+    pass
+
 class OneLine(OneLineListItem):
     divider = None    
+
 class Tab(MDFloatLayout, MDTabsBase):
     pass
 
+
 class DemoApp(MDApp):
+
+
 
 ###################################################################
 # COLOR SCHEMES
@@ -60,6 +73,12 @@ class DemoApp(MDApp):
     paginated = ()
     page_length = 0
     page_number = 0
+    
+    morph  = {
+            "Morphology":{
+            }
+        }
+
 ###################################################################
 # DIALOGS
 ###################################################################
@@ -85,6 +104,14 @@ class DemoApp(MDApp):
     def spin_dialog(self):
         dialog.spin_dialog(self)
 
+    dialog7= None
+    def show_morph(self,morph, *args):
+        dialog.show_morph(self, morph, *args)
+
+    dialog8= None
+    def show_dialog(self):
+        dialog.show_dialog(self)
+
 ###################################################################
 # SWITCH SCREEN
 ###################################################################
@@ -97,6 +124,7 @@ class DemoApp(MDApp):
 
     def swtchScreen(self,screen,*args):
         # self.refresh_callback()
+        self.clear_morph()
         self.help.current = screen
         self.help.transition.direction = 'right'
 
@@ -153,8 +181,12 @@ class DemoApp(MDApp):
             for i in self.paginated[self.page_number]:
                 if search in i:
                     await asynckivy.sleep(0)
+                    # sample_num = db.child("Hoya").child(i).child("sample_num").get()
+                    # status = db.child("Hoya").child(i).child("status").get()
                     self.help.get_screen('collections').ids.box.add_widget(
                         OneLineIcon(text= f'{i}',
+                            # secondary_text = f'Status: {status.val()}',
+                            # tertiary_text = f'{sample_num.val()} samples',
                         # on_touch_down = lambda x: print("adfads")
                         on_release = lambda y: self.spin_dialog(),
                         on_press= lambda x, value_for_pass=i: self.passValue_thread(value_for_pass),
@@ -171,8 +203,12 @@ class DemoApp(MDApp):
                 for i in self.arr:
                     if search in i:
                         await asynckivy.sleep(0)
+                        # sample_num = db.child("Hoya").child(i).child("sample_num").get()
+                        # status = db.child("Hoya").child(i).child("status").get()
                         self.help.get_screen('collections').ids.box.add_widget(
                             OneLineIcon(text= f'{i}',
+                            # secondary_text = f'Status: {status.val()}',
+                            # tertiary_text = f'{sample_num.val()} samples',
                             # on_touch_down = lambda x: print("adfads")
                             on_release = lambda y: self.spin_dialog(),
                             on_press= lambda x, value_for_pass=i: self.passValue_thread(value_for_pass),
@@ -290,10 +326,16 @@ class DemoApp(MDApp):
 
         # for complete documents / to separeate passport data and morphology
         morphology = db.child("Hoya").child(args_str).child("Morphology").get()
+        morphi  = {
+                "Morphology":{
+                }
+            }
+        morphi['Morphology'].update(morphology.val())
         for datas in morphology.each():
             screen2.ids.dataso.add_widget(
                 OneLine(
-                    text=f"{datas.key()} : {datas.val()}"
+                    text=f"{datas.key()}",
+                    on_press= lambda x, value_for_pass= datas.key(): self.show_morph(morphi,value_for_pass)
                     # halign="center"
                 )
             )
@@ -416,6 +458,73 @@ class DemoApp(MDApp):
 ###################################################################
 # UPLOAD DOCUMENT
 ###################################################################
+    def puppy(self):
+
+
+        sn = self.dialog8.content_cls.ids.input_19.text
+        cb = self.dialog8.content_cls.ids.input_7.text
+        el = self.dialog8.content_cls.ids.input_8.text
+        hl = self.dialog8.content_cls.ids.input_9.text
+        pl = self.dialog8.content_cls.ids.input_10.text
+        pw = self.dialog8.content_cls.ids.input_13.text
+        rl = self.dialog8.content_cls.ids.input_14.text
+        shl = self.dialog8.content_cls.ids.input_15.text
+        tal = self.dialog8.content_cls.ids.input_16.text
+        td = self.dialog8.content_cls.ids.input_17.text
+        wl = self.dialog8.content_cls.ids.input_18.text
+
+        sopu = {
+            f'{sn}':{
+                'Caudicle Bulb': f'{cb}',
+                "Extension": f'{el}',
+                "Hips": f'{hl}',
+                'Pollinium Length': f'{pl}',
+                "Pollinium Widest": f'{pw}',
+                "Retinaculum Length": f'{rl}',
+                "Shoulder": f'{shl}',
+                "Translator Arm Length": f'{tal}',
+                "Translator Depth": f'{td}',
+                "Waist": f'{wl}',
+                }
+            }
+        if sn == '':
+            toast("Name Cannot Be Blank!")
+        else:
+            self.morph['Morphology'].update(sopu)
+            print(self.morph)
+
+            self.help.get_screen('uploaddoc').ids.box.add_widget(
+                OneLineIcon(text= sn,
+                # on_touch_down = lambda x: print("adfads")
+                # on_release = lambda y: self.show_morph(),
+                on_press= lambda x, value_for_pass= sn: self.show_morph(self.morph,value_for_pass),
+
+                ))
+
+            self.help.get_screen('iden').ids.box.add_widget(
+                OneLineIcon(text= sn,
+                # on_touch_down = lambda x: print("adfads")
+                # on_release = lambda y: self.show_morph(),
+                on_press= lambda x, value_for_pass= sn: self.show_morph(self.morph,value_for_pass),
+
+                ))
+
+            for i in range(7,11):
+                self.dialog8.content_cls.ids[f'input_{i}'].text = ""
+            
+            for i in range(13,20):
+                self.dialog8.content_cls.ids[f'input_{i}'].text = ""
+
+    def clear_morph(self):
+        self.morph =  {
+            "Morphology":{
+                }
+            }
+        self.help.get_screen('uploaddoc').ids.box.clear_widgets()
+        self.help.get_screen('iden').ids.box.clear_widgets()
+
+
+
     def upload_thread(self):
         self.spin_dialog()
         threading.Thread(target=(self.upload)).start()
@@ -430,17 +539,9 @@ class DemoApp(MDApp):
         project = self.help.get_screen('uploaddoc').ids.input_4.text
         prjLdr = self.help.get_screen('uploaddoc').ids.input_5.text
         otherDtls = self.help.get_screen('uploaddoc').ids.input_6.text
+        status = self.help.get_screen('uploaddoc').ids.input_7.text
 
-        pl = self.help.get_screen('uploaddoc').ids.input_7.text
-        pw = self.help.get_screen('uploaddoc').ids.input_8.text
-        rl = self.help.get_screen('uploaddoc').ids.input_9.text
-        shl = self.help.get_screen('uploaddoc').ids.input_10.text
-        wl = self.help.get_screen('uploaddoc').ids.input_13.text
-        hl = self.help.get_screen('uploaddoc').ids.input_14.text
-        el = self.help.get_screen('uploaddoc').ids.input_15.text
-        tal = self.help.get_screen('uploaddoc').ids.input_16.text
-        td = self.help.get_screen('uploaddoc').ids.input_17.text
-        cb = self.help.get_screen('uploaddoc').ids.input_18.text
+        sample_num = len(self.morph['Morphology'].keys())
 
         image = self.help.get_screen('uploaddoc').ids.input_11.text
         file = self.help.get_screen('uploaddoc').ids.input_12.text
@@ -469,27 +570,20 @@ class DemoApp(MDApp):
                 'Project': f'{project}',
                 'Project Leader': f'{prjLdr}',
                 'Other Details': f'{otherDtls}',
+                'Status': f'{status}',
             },
-            "Morphology":{
-                'Name': f'{name}',
-                'Pollinium Length': f'{pl}',
-                "Pollinium Widest": f'{pw}',
-                "Retinaculum Length": f'{rl}',
-                "Shoulder": f'{shl}',
-                "Waist": f'{wl}',
-                "Hips": f'{hl}',
-                "Extension": f'{el}',
-                "Translator Arm Length": f'{tal}',
-                "Translator Depth": f'{td}',
-                'Caudicle Bulb Diameter': f'{cb}',
-            },
+
             "urls":{
                 'img_url' : f'{img_url}',
                 'file_url' : f'{file_url}',
                 'qr_url': f'{qr_url}',
             },
-            'scan_id' : f'{scan_id}'
-            }
+
+            'scan_id' : f'{scan_id}',
+            'status': f'{status}',
+            'sample_num':sample_num,
+        }
+        data.update(self.morph)
 
         if name == '':
             toast("Name Cannot Be Blank!")
@@ -499,6 +593,7 @@ class DemoApp(MDApp):
             self.dialog6.dismiss(force=True)
         else:
             db.child('Hoya').child(f'{name}').set(data)
+            self.clear_morph()
             self.dialog6.dismiss(force=True)
             toast("Document Saved Successfully")
             self.swtchScrn()
@@ -619,6 +714,22 @@ class DemoApp(MDApp):
             MDRaisedButton( text = "Open link",
             on_press = lambda x: webbrowser.open(myDate))
         )     
+
+###################################################################
+# CREATE TABLES
+###################################################################
+# def iden_thread(self, *args):
+#     self.spin_dialog()
+#     threading.Thread(target=(self.identify), args=self.morph).start()
+
+    def createTable(self):
+        morph = {'Morphology': {'sample 1': {'Caudicle Bulb': '0.08', 'Extension': '0.13', 'Hips': '0.34', 'Pollinium Length': '0.73', 'Pollinium Widest': '0.38', 'Retinaculum Length': '0.20', 'Shoulder': '0.08', 'Translator Arm Length': '0.16', 'Translator Depth': '0.06', 'Waist': '0.13'}, 'sample 2': {'Caudicle Bulb': '0.06', 'Extension': '0.11', 'Hips': '0.06', 'Pollinium Length': '0.81', 'Pollinium Widest': '0.19', 'Retinaculum Length': '0.61', 'Shoulder': '0.17', 'Translator Arm Length': '0.23', 'Translator Depth': '0.05', 'Waist': '0.12'}, 'sample 3': {'Caudicle Bulb': '0.12', 'Extension': '0.17', 'Hips': '0.02', 'Pollinium Length': '0.62', 'Pollinium Widest': '0.24', 'Retinaculum Length': '0.35', 'Shoulder': '0.26', 'Translator Arm Length': '0.03', 'Translator Depth': '0.02', 'Waist': '0.08'}}}
+
+        a,b,c = iden.identify(morph)
+        print(a,b,c)
+        
+        
+
 
 
 ###################################################################
