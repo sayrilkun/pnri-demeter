@@ -16,6 +16,10 @@ from tkinter import filedialog
 from pyzbar.pyzbar import decode
 from datetime import datetime
 
+from kivymd.uix.datatables import MDDataTable
+from kivy.uix.anchorlayout import AnchorLayout
+from kivy.metrics import dp
+
 
 import utils.frame_capture as frame_capture
 import utils.frame_draw as frame_draw
@@ -66,3 +70,5 @@ from screens.CameraScreen import CameraScreen
 from screens.UploadDocScreen import UploadDocScreen
 from screens.ScannerScreen import ScannerScreen
 from screens.QRScreen import QRScreen
+from screens.ResultScreen import ResultScreen
+

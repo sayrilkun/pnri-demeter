@@ -95,7 +95,7 @@ def identify(morph):
 
     # GET DIFFERENCE SCORES
     score = abs((idf-mer)/((idf+mer)/2))*100
-    score['mean difference score'] = score.mean(axis=1)
+    score['mean difference score'] = round(score.mean(axis=1),2)
     con = np.concatenate((names, names2)) #join array
     score['species'] = con
     score_table = score[['species','mean difference score']] #display selected columns
@@ -122,8 +122,7 @@ def identify(morph):
 
         for i in range(len(uk.T)):
             val = ttest_ind(d[passer][i], uk[i])
-            array_t_test.append(val[1])
-                
+            array_t_test.append(round(val[1],2))
             # print(val[1])
         t_test_val.append(array_t_test)
     # t_test_val
@@ -143,7 +142,7 @@ def identify(morph):
     # self.help.get_screen('uploaddoc').current
     # help.current = 'camera'
 
-    return (score_table, passed_species, t_test_df)
+    return score_table, passed_species, t_test_df
     
 
 

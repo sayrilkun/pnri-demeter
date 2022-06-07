@@ -725,9 +725,55 @@ class DemoApp(MDApp):
     def createTable(self):
         morph = {'Morphology': {'sample 1': {'Caudicle Bulb': '0.08', 'Extension': '0.13', 'Hips': '0.34', 'Pollinium Length': '0.73', 'Pollinium Widest': '0.38', 'Retinaculum Length': '0.20', 'Shoulder': '0.08', 'Translator Arm Length': '0.16', 'Translator Depth': '0.06', 'Waist': '0.13'}, 'sample 2': {'Caudicle Bulb': '0.06', 'Extension': '0.11', 'Hips': '0.06', 'Pollinium Length': '0.81', 'Pollinium Widest': '0.19', 'Retinaculum Length': '0.61', 'Shoulder': '0.17', 'Translator Arm Length': '0.23', 'Translator Depth': '0.05', 'Waist': '0.12'}, 'sample 3': {'Caudicle Bulb': '0.12', 'Extension': '0.17', 'Hips': '0.02', 'Pollinium Length': '0.62', 'Pollinium Widest': '0.24', 'Retinaculum Length': '0.35', 'Shoulder': '0.26', 'Translator Arm Length': '0.03', 'Translator Depth': '0.02', 'Waist': '0.08'}}}
 
-        a,b,c = iden.identify(morph)
-        print(a,b,c)
-        
+        score_table,passed_species,t_test_df = iden.identify(morph)
+        print(score_table,passed_species,t_test_df)
+        self.swtchScreen('result')
+        # morphi['Morphology'].update(morphology.val())
+        for passed in passed_species:
+            self.help.get_screen('result').ids.passed.add_widget(
+                OneLineListItem(
+                    text= passed,
+                )
+            )
+        # unknown_data = [
+        #         [0.08,	0.13,	0.34,	0.73,	0.38,	0.2,	0.08,	0.16,	0.06,	0.13],
+        #         [0.06,	0.11,	0.06,	0.81,	0.19,	0.61,	0.17,	0.23,	0.05,	0.12],
+        #         [0.12,	0.17,	0.02,	0.62,	0.24,	0.35,	0.26,	0.03,	0.02,	0.08]
+        # ]
+
+        # unknown = pd.DataFrame(unknown_data)
+        score_row = list(score_table.itertuples(index=False, name=None))
+        print(score_row)
+        # layout = AnchorLayout()
+        data_tables = MDDataTable(
+            size_hint=(0.9, 0.9),
+            use_pagination=True,
+            rows_num=10,
+            column_data=[
+                ("Hoya Species", dp(35)),
+                ("Mean Difference Score", dp(50)),
+            ],
+            row_data= score_row
+        )
+        self.help.get_screen('result').ids.diff.add_widget(data_tables)
+
+        t_test_row = list(t_test_df.itertuples(index=False, name=None))
+        print(t_test_row)
+        # layout = AnchorLayout()
+        data_tables = MDDataTable(
+            size_hint=(0.9, 0.9),
+            use_pagination=True,
+            rows_num=10,
+            column_data=[
+                ("Landmarks", dp(35)),
+                ("pvalue", dp(15)),
+                ("interpretation", dp(50)),
+            ],
+            row_data= t_test_row
+        )
+        self.help.get_screen('result').ids.ttest.add_widget(data_tables)
+        # layout.add_widget(data_tables)
+        # return layout
         
 
 
