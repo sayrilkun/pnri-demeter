@@ -1,11 +1,13 @@
 from utils.imports import *
+from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelThreeLine, MDExpansionPanelOneLine
+from kivymd.uix.boxlayout import MDBoxLayout
 
 import os
 arr = os.listdir("kv/")
 for i in arr:
     Builder.load_file(f'kv/{i}')
 
-Window.size=(400,700)
+Window.size=(570,870)
 global config
 config = {
     "apiKey": "AIzaSyBH3WOpmUdPj0vGIpneswkW2CS8fFidlXw",
@@ -29,6 +31,8 @@ db= firebase.database()
 #         }
 #     }
 
+class HelpContent(MDBoxLayout):
+    '''Custom content.'''
 class KivyCamera(Image):
     pass
 
@@ -67,7 +71,7 @@ class DemoApp(MDApp):
     dark_green2 = 37/255, 160/255, 127/255, 1
     dark1 = 143/255, 188/255, 143/255,1
     light1 = 60/255, 179/255, 113/255, 1
-    dark2 = 46/255, 139/255, 87/255, 1
+    dark2 = 1,1,1,1
 
     arr = [] 
     paginated = ()
@@ -650,7 +654,9 @@ class DemoApp(MDApp):
     def show_camscanner(self):
         cam = self.help.get_screen('scanner').ids.cam
         self.clock_event = Clock.schedule_interval(self.update, 1.0 /30)
-        cam.capture = cv2.VideoCapture('http://192.168.1.2:4747/video',cv2.CAP_DSHOW)
+        cam.capture = cv2.VideoCapture(1)
+        # cam.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW) 
+
 
     def update(self, dt):
         cam = self.help.get_screen('scanner').ids.cam
@@ -794,7 +800,9 @@ class DemoApp(MDApp):
         # disabled cam, naglalag kasi
         cam = self.help.get_screen('camera').ids.camie
         self.clock_event = Clock.schedule_interval(self.object_detection, 1.0 /60)
-        cam.capture = cv2.VideoCapture(1,cv2.CAP_DSHOW) 
+        cam.capture = cv2.VideoCapture(1) 
+        # cam.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW) 
+
         self.help.current = 'camera'
         self.help.transition.direction = "left"
 
@@ -832,6 +840,24 @@ class DemoApp(MDApp):
     def on_start(self):
         self.pop_array()
         self.list_array()
+
+        # contentArray = ['dadgad','fadfad','fdsf', 'fadf']
+        help_array = ['Camera', 'Collections', 'QR Code Scanner', 'Settings' ]
+        for i in help_array:
+            self.help.get_screen('help').ids.box.add_widget(
+                MDExpansionPanel(
+                    # icon=f"{images_path}kivymd.png",
+                    content=HelpContent(),
+                    panel_cls=MDExpansionPanelOneLine(
+                        text=i,
+                        # secondary_text="Secondary text",
+                        # tertiary_text="Tertiary text",
+                    )
+                )
+            )
+        # for j in contentArray:
+        #     self.help.get_screen('help').ids.boxerino.add_widget(
+        #                     OneLineListItem(text= j))
         # GeneratorScreen.panget(self)
         # CollectionsScreen.pop_array(self)
         # CollectionsScreen.list_array(self)

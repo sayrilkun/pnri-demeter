@@ -9,7 +9,7 @@ class QRScreen(Screen):
     #     x=DemoApp()
     #     x.on_qr()
         myDate = self.ids.forem.text
-        self.ids.link.add_widget(
-            MDRaisedButton( text = "Open link",
-            on_press = lambda x: webbrowser.open(myDate))
-        )             
+        # self.ids.link.add_widget(
+        #     MDRaisedButton( text = "Open link",
+        #     on_press = lambda x: webbrowser.open(myDate))
+        # )             

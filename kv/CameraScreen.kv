@@ -17,18 +17,18 @@
         on_press: 
             app.spin_dialog()
             app.camruler_thread()
-    # MDBoxLayout:
-    #     # size_hint_y:.25
-    #     padding:dp(15)
-    #     KivyCamera:
-    #         id: camie
-    #         size_hint: 1,1
-    #         pos_hint: {"x":0,"top":1} 
-    #         # on_parent:
-    #         #     print('sfadtysf')
-    # MDFloatingActionButton:
-    #     id: capture
-    #     text: 'Capture'
-    #     pos_hint: {'center_x':0.5,'center_y':0.2}
-        # on_press: 
-        #     app.camie()
+    MDBoxLayout:
+        # size_hint_y:.25
+        padding:dp(15)
+        KivyCamera:
+            id: camie
+            size_hint: 1,1
+            pos_hint: {"x":0,"top":1} 
+            # on_parent:
+            #     print('sfadtysf')
+    MDFloatingActionButton:
+        id: capture
+        text: 'Capture'
+        pos_hint: {'center_x':0.5,'center_y':0.2}
+        on_press: 
+            app.camie()

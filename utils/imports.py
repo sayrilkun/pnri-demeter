@@ -20,12 +20,12 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.metrics import dp
 
-
 import utils.frame_capture as frame_capture
 import utils.frame_draw as frame_draw
 import utils.dialog as dialog
 import utils.iden as iden
 
+from PIL import Image, ImageDraw, ImageFont
 
 # import utils.camruler as camruler
 

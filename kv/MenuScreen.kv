@@ -7,13 +7,14 @@
     MDBoxLayout:
         orientation:'vertical'
         MDBoxLayout:
-            size_hint_y:.25
-            padding:dp(25)
+            size_hint_y:.25            
             MDBoxLayout:
-                orientation:"vertical"
-                MDLabel:
-                    text:"Demeter"
-                    font_style:"H4"
+                Image:
+                    source: 'assets\images\logo.jpg'
+                    size_hint_y: None
+                    width: 100
+                    allow_stretch: True
+
 
         MDGridLayout:
             size_hint_y:.75
@@ -29,7 +30,7 @@
                 on_press: 
                     root.manager.current = 'camera'
                     root.manager.transition.direction = "left"
-                    # app.show_camie()
+                    app.show_camie()
 
             ElementCard:
                 image:"assets/images/flower.png"

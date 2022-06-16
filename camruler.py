@@ -3,6 +3,7 @@
 #-------------------------------
 
 # builtins
+from PIL import Image, ImageDraw, ImageFont
 import os,sys,time,traceback
 from math import hypot
 
@@ -68,7 +69,7 @@ class CustomConfig(Config):
     IMAGES_PER_GPU = 2
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 2  # Background + toy
+    NUM_CLASSES = 1 + 3  # Background + toy
 
     # Number of training steps per epoch
     STEPS_PER_EPOCH = 100
@@ -85,9 +86,9 @@ class CustomDataset(utils.Dataset):
         subset: Subset to load: train or val
         """
         # Add classes. We have only one class to add.
-        self.add_class("object", 1, "Corpusculum")
-        self.add_class("object", 2, "Pollinium")
-        # self.add_class("object", 3, "xyz")
+        self.add_class("object", 1, "corpusculum")
+        self.add_class("object", 2, "pollinium")
+        self.add_class("object", 3, "translator")
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
@@ -123,13 +124,12 @@ class CustomDataset(utils.Dataset):
             # Get the x, y coordinaets of points of the polygons that make up
             # the outline of each object instance. There are stores in the
             # shape_attributes (see json format above)
-            polygons = [r['shape_attributes'] for r in a['regions']]
-            objects = [s['region_attributes']['name'] for s in a['regions']]
-            print("objects:", objects)
-            name_dict = {"Corpusculum": 1, "Pollinium": 2}  # ,"xyz": 3}
+            polygons = [r['shape_attributes'] for r in a['regions']] 
+            objects = [s['region_attributes']['names'] for s in a['regions']]
+            print("objects:",objects)
+            name_dict = {"corpusculum": 1,"pollinium": 2,"translator": 3} #,"xyz": 3}
             # key = tuple(name_dict)
             num_ids = [name_dict[a] for a in objects]
-
             # num_ids = [int(n['Event']) for n in objects]
             # load_mask() needs the image size to convert polygons to masks.
             # Unfortunately, VIA doesn't include it in JSON, so we must read
@@ -202,7 +202,7 @@ MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 # You can download this file from the Releases page
 # https://github.com/matterport/Mask_RCNN/releases
 # TODO: update this path
-WEIGHTS_PATH = r"D:\admin\Documents\School_Stuffs\CAPSTONE\pnri-demeter\wastedata-Mask_RCNN-multiple-classes\mode.h5"
+WEIGHTS_PATH = r"D:\admin\Documents\School_Stuffs\CAPSTONE\pnri-demeter\wastedata-Mask_RCNN-multiple-classes\model_x.h5"
 
 config = CustomConfig()
 CUSTOM_DIR = os.path.join(ROOT_DIR, "../dataset")
@@ -304,7 +304,7 @@ model.load_weights(weights_path, by_name=True)
 #                             title="Predictions1")
 
 class_names = [
-    'BG', 'Corpusculum', 'Pollinium'
+    'BG', 'corpusculum', 'pollinium', 'translator'
 ]
 
 
@@ -391,8 +391,10 @@ def medisplay_instances(image, boxes, masks, ids, names, scores):
 
 # get camera id from argv[1]
 # example "python3 camruler.py 2"
-ip = 'http://192.168.1.104:4747/video'
-camera_id = 0
+ip = 'http://192.168.1.102:4747/video'
+path= "Dataset/val_copy/Hoya_verticillata.jpg"
+# ima = cv2.imread(path)
+camera_id = 1
 if len(sys.argv) > 1:
     camera_id = sys.argv[1]
     if camera_id.isdigit():
@@ -437,7 +439,7 @@ draw.height = height
 #-------------------------------
 
 # distance units designator
-unit_suffix = 'mm'
+unit_suffix = 'um'
 
 # calibrate every N pixels
 pixel_base = 10
@@ -786,7 +788,7 @@ while 1:
         draw.line(frame0,cx,cy, cx+cy, cy-cx,weight=1,color='red')
         draw.line(frame0,cx,cy,-cx+cx,-cy+cy,weight=1,color='red')
         draw.line(frame0,cx,cy, cx-cy, cy+cx,weight=1,color='red')
-
+        
         # mouse cursor lines (parallel to aligned crosshairs)
         mx,my = mouse_raw
         draw.line(frame0,mx,my,mx+dm,my+(dm*( cy/cx)),weight=1,color='green')
@@ -839,9 +841,9 @@ while 1:
         text.append('')
         text.append(f'AUTO MODE')
         text.append(f'UNITS: {unit_suffix}')
-        text.append(f'MIN PERCENT: {auto_percent:.2f}')
-        text.append(f'THRESHOLD: {auto_threshold}')
-        text.append(f'GAUSS BLUR: {auto_blur}')
+        text.append(f'DOUBLE PRESS Z TO PREDICT AND CAPTURE IMAGE')
+        # text.append(f'THRESHOLD: {auto_threshold}')
+        # text.append(f'GAUSS BLUR: {auto_blur}')
         
         # gray frame
         # frame1 = cv2.cvtColor(frame0,cv2.COLOR_BGR2GRAY)
@@ -865,6 +867,40 @@ while 1:
                 predicted_img, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
             )
             cv2.imwrite(f'assets/captured_img/predicted.png', predicted_img)
+
+            im = Image.open('assets/captured_img/predicted.png')
+            width, height = im.size
+
+            draw = ImageDraw.Draw(im)
+            text = "photograpped by Andrei Cyril Gimoros - this image is a property of Philippine Nuclear Research Institute"
+
+            font = ImageFont.truetype('arial.ttf', 20)
+            textwidth, textheight = draw.textsize(text, font)
+
+            # calculate the x,y coordinates of the text
+            margin = 10
+            x = width - textwidth - margin
+            y = height - textheight - margin
+
+            # draw watermark in the bottom right corner
+            draw.text((x, y), text, font=font)
+            im.show()
+            im.save('assets/captured_img/pred_watermark.jpg')
+
+
+
+        if cv2.waitKey(1) & 0xFF == ord('p'):
+            arr = os.listdir("dataset/val_copy/")
+            for i in arr:                    
+                cv2.imwrite(f'assets/captured_img/img_cap.png', frame0)
+                print("Processing...")
+                predicted_img = cv2.imread(f'dataset/val_copy/{i}')
+                results = model.detect([predicted_img], verbose=0)
+                r = results[0]
+                predicted_img = medisplay_instances(
+                    predicted_img, r['rois'], r['masks'], r['class_ids'], class_names, r['scores']
+                )
+                cv2.imwrite(f'assets/pred/{i}', predicted_img)
 
     #-------------------------------
     # dimension mode
@@ -936,14 +972,14 @@ while 1:
     # add usage key
     text.append('')
     text.append(f'Q = QUIT')
-    text.append(f'R = ROTATE')
-    text.append(f'N = NORMALIZE')
+    # text.append(f'R = ROTATE')
+    # text.append(f'N = NORMALIZE')
     text.append(f'A = AUTO-MODE')
-    if key_flags['auto']:
-        text.append(f'P = MIN-PERCENT')
-        text.append(f'T = THRESHOLD')
-        text.append(f'T = GAUSS BLUR')
-    text.append(f'C = CONFIG-MODE')
+    # if key_flags['auto']:
+    #     text.append(f'P = MIN-PERCENT')
+    #     text.append(f'T = THRESHOLD')
+    #     text.append(f'T = GAUSS BLUR')
+    text.append(f'C = CALIBRATE')
     
 
 
