@@ -871,11 +871,11 @@ while 1:
             im = Image.open('assets/captured_img/predicted.png')
             width, height = im.size
 
-            draw = ImageDraw.Draw(im)
-            text = "photograpped by Andrei Cyril Gimoros - this image is a property of Philippine Nuclear Research Institute"
+            drawer = ImageDraw.Draw(im)
+            texty = "photograpped by Andrei Cyril Gimoros - this image is a property of Philippine Nuclear Research Institute"
 
             font = ImageFont.truetype('arial.ttf', 20)
-            textwidth, textheight = draw.textsize(text, font)
+            textwidth, textheight = drawer.textsize(texty, font)
 
             # calculate the x,y coordinates of the text
             margin = 10
@@ -883,7 +883,7 @@ while 1:
             y = height - textheight - margin
 
             # draw watermark in the bottom right corner
-            draw.text((x, y), text, font=font)
+            drawer.text((x, y), texty, font=font)
             im.show()
             im.save('assets/captured_img/pred_watermark.jpg')
 
