@@ -1,9 +1,8 @@
-firebase_admin
 kivy
 kivymd
 opencv-python
 pyzbar
 pyrebase4
 qrcode
-kaki
-plyer
+scipy
+pandas
