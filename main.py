@@ -1,35 +1,14 @@
 from yutils.imports import *
 from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelThreeLine, MDExpansionPanelOneLine
 from kivymd.uix.boxlayout import MDBoxLayout
-
+from yutils.pyre import db, storage
 import os
+
 arr = os.listdir("kv/")
 for i in arr:
     Builder.load_file(f'kv/{i}')
 
 Window.size=(375,625)
-global config
-config = {
-    "apiKey": "AIzaSyBH3WOpmUdPj0vGIpneswkW2CS8fFidlXw",
-    "authDomain": "pnri-demeter.firebaseapp.com",
-    "databaseURL": "https://pnri-demeter-default-rtdb.firebaseio.com",
-    "projectId": "pnri-demeter",
-    "storageBucket": "pnri-demeter.appspot.com",
-    "messagingSenderId": "456214792415",
-    "appId": "1:456214792415:web:773d7ea18f8ba214df816a",
-    "measurementId": "G-00QH790MRG",
-}
-
-
-firebase = pyrebase.initialize_app(config)
-storage= firebase.storage()
-db= firebase.database()
-
-# global morph
-# morph  = {
-#         "Morphology":{
-#         }
-#     }
 
 class HelpContent(MDBoxLayout):
     '''Custom content.'''
@@ -73,6 +52,7 @@ class DemoApp(MDApp):
     light1 = 60/255, 179/255, 113/255, 1
     dark2 = 1,1,1,1
 
+    all_docs = {}
     arr = [] 
     paginated = ()
     page_length = 0
@@ -168,9 +148,10 @@ class DemoApp(MDApp):
             self.page_number+=1   
 
     def pop_array(self):
-        all_docs = db.child("Hoya").get()
-        for i in all_docs.each():
-            self.arr.append(i.key())
+        self.all_docs = db.child("Hoya").get().val()
+        # print(self.all_docs)
+        for key, value in self.all_docs.items():
+            self.arr.append(key)
         def chunk(it, size):
             it = iter(it)
             return iter(lambda: tuple(islice(it, size)), ())
@@ -187,13 +168,15 @@ class DemoApp(MDApp):
                     await asynckivy.sleep(0)
                     # sample_num = db.child("Hoya").child(i).child("sample_num").get()
                     # status = db.child("Hoya").child(i).child("status").get()
+                    sample_num = self.all_docs[i]['sample_num']
+                    status =self.all_docs[i]['status']
                     self.help.get_screen('collections').ids.box.add_widget(
-                        OneLineIcon(text= f'{i}',
-                            # secondary_text = f'Status: {status.val()}',
-                            # tertiary_text = f'{sample_num.val()} samples',
+                        ThreeLineIcon(text= f'{i}',
+                            secondary_text = f'Status: {status}',
+                            tertiary_text = f'{sample_num} sample/s',
                         # on_touch_down = lambda x: print("adfads")
-                        on_release = lambda y: self.spin_dialog(),
-                        on_press= lambda x, value_for_pass=i: self.passValue_thread(value_for_pass),
+                        # on_release = lambda y: self.spin_dialog(),
+                        on_press= lambda x, value_for_pass=i: self.passValue(value_for_pass),
 
                         ))  
         asynckivy.start(search_list())  
@@ -209,13 +192,15 @@ class DemoApp(MDApp):
                         await asynckivy.sleep(0)
                         # sample_num = db.child("Hoya").child(i).child("sample_num").get()
                         # status = db.child("Hoya").child(i).child("status").get()
+                        sample_num = self.all_docs[i]['sample_num']
+                        status =self.all_docs[i]['status']
                         self.help.get_screen('collections').ids.box.add_widget(
-                            OneLineIcon(text= f'{i}',
-                            # secondary_text = f'Status: {status.val()}',
-                            # tertiary_text = f'{sample_num.val()} samples',
+                            ThreeLineIcon(text= f'{i}',
+                            secondary_text = f'Status: {status}',
+                            tertiary_text = f'{sample_num} sample/s',
                             # on_touch_down = lambda x: print("adfads")
-                            on_release = lambda y: self.spin_dialog(),
-                            on_press= lambda x, value_for_pass=i: self.passValue_thread(value_for_pass),
+                            # on_release = lambda y: self.spin_dialog(),
+                            on_press= lambda x, value_for_pass=i: self.passValue(value_for_pass),
 
                             ))
                         
@@ -251,6 +236,7 @@ class DemoApp(MDApp):
 
         def refresh_callback(interval):
             self.help.get_screen('collections').ids.box.clear_widgets()
+            self.all_docs ={}
             self.arr = []
             self.pop_array()
             self.list_array()
@@ -270,13 +256,17 @@ class DemoApp(MDApp):
 
         args_str = ','.join(map(str,args))
 
-        icon = 'https://firebasestorage.googleapis.com/v0/b/pnri-demeter.appspot.com/o/flower.png?alt=media&token=3553abca-251f-42a3-b939-5d8eefc10a9a'
+        icon = 'https://firebasestorage.googleapis.com/v0/b/pnri-demeter.appspot.com/o/hoya%20(1).png?alt=media&token=491584b8-4d48-487a-9f41-c5a3faa1401c'
         passportData = ['Name','Date of Acquisition', 'Accession Origin', 'Project', 'Project Leader', 'Other Detals']
         morphology = ['Pollinium', 'Retinaculum', 'Caudicle Bulb Diameter', 'Translator']
 
-        img_url = db.child("Hoya").child(args_str).child("urls").child("img_url").get().val()
-        qr_url= db.child("Hoya").child(args_str).child("urls").child("qr_url").get().val()
-        file_url= db.child("Hoya").child(args_str).child("urls").child("file_url").get().val()
+        # img_url = db.child("Hoya").child(args_str).child("urls").child("img_url").get().val()
+        # qr_url= db.child("Hoya").child(args_str).child("urls").child("qr_url").get().val()
+        # file_url= db.child("Hoya").child(args_str).child("urls").child("file_url").get().val()
+
+        img_url =  self.all_docs[args_str]['urls']["img_url"]
+        qr_url =  self.all_docs[args_str]['urls']["qr_url"]
+        file_url =  self.all_docs[args_str]['urls']["file_url"]
 
         screen2 = self.help.get_screen('singledoc')
         screen2.ids.datas.clear_widgets()
@@ -329,32 +319,35 @@ class DemoApp(MDApp):
 
 
         # for complete documents / to separeate passport data and morphology
-        morphology = db.child("Hoya").child(args_str).child("Morphology").get()
+        # morphology = db.child("Hoya").child(args_str).child("Morphology").get()
+
+        morphology = self.all_docs[args_str]['Morphology']
         morphi  = {
                 "Morphology":{
                 }
             }
-        morphi['Morphology'].update(morphology.val())
-        for datas in morphology.each():
+        morphi['Morphology'].update(morphology)
+        for key, value in morphology.items():
             screen2.ids.dataso.add_widget(
                 OneLine(
-                    text=f"{datas.key()}",
-                    on_press= lambda x, value_for_pass= datas.key(): self.show_morph(morphi,value_for_pass)
+                    text=f"{key}",
+                    on_press= lambda x, value_for_pass= key: self.show_morph(morphi,value_for_pass)
                     # halign="center"
                 )
             )
         
-        passport_data = db.child("Hoya").child(args_str).child("Passport Data").get()
-        for datas in passport_data.each():
+        # passport_data = db.child("Hoya").child(args_str).child("Passport Data").get()
+        passport_data = self.all_docs[args_str]["Passport Data"]
+        for key, value in passport_data.items():
             screen2.ids.datas.add_widget(
                 OneLine(
-                    text=f"{datas.key()} : {datas.val()}"
+                    text=f"{key} : {value}"
                     # halign="center"
                 )
             )
         self.help.current = 'singledoc'    
         self.help.transition.direction = 'left'   
-        self.dialog6.dismiss(force=True)
+        # self.dialog6.dismiss(force=True)
 
 ###################################################################
 # UPLOAD/EDIT STATE

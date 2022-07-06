@@ -38,6 +38,7 @@
         size_hint: .75,0.075
         mode: "rectangle"
         color_mode: 'accent'
+        password: True
 
     MDTextField:
         id: input_10
@@ -46,3 +47,13 @@
         size_hint: .75,0.075
         mode: "rectangle"
         color_mode: 'accent'
+        password: True
+
+    MDRaisedButton:
+        id: input_11
+        text: "Change Credentials"
+        pos_hint: {"center_x": 0.5, "center_y": 0.35}
+        on_press: root.changeCred()
+
+
+        
