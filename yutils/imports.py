@@ -56,6 +56,7 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivymd.uix.label import MDLabel
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.textfield import MDTextField
+from kivymd.uix.card import MDCardSwipe
 
 from screens.IdentifierScreen import IdentifierScreen
 from screens.LoginScreen import LoginScreen

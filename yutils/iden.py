@@ -1,10 +1,13 @@
 from yutils.imports import *
-
+from kivymd.uix.list import IRightBodyTouch, OneLineListItem
 from yutils.pyre import db
+class OneLine(OneLineListItem):
+    divider = None
 
 def identify(self,morph):
     # CONVERT LIST TO DF
-    # morph = {'Morphology': {'sample 1': {'Caudicle Bulb': '0.08', 'Extension': '0.13', 'Hips': '0.34', 'Pollinium Length': '0.73', 'Pollinium Widest': '0.38', 'Retinaculum Length': '0.20', 'Shoulder': '0.08', 'Translator Arm Length': '0.16', 'Translator Depth': '0.06', 'Waist': '0.13'}, 'sample 2': {'Caudicle Bulb': '0.06', 'Extension': '0.11', 'Hips': '0.06', 'Pollinium Length': '0.81', 'Pollinium Widest': '0.19', 'Retinaculum Length': '0.61', 'Shoulder': '0.17', 'Translator Arm Length': '0.23', 'Translator Depth': '0.05', 'Waist': '0.12'}, 'sample 3': {'Caudicle Bulb': '0.12', 'Extension': '0.17', 'Hips': '0.02', 'Pollinium Length': '0.62', 'Pollinium Widest': '0.24', 'Retinaculum Length': '0.35', 'Shoulder': '0.26', 'Translator Arm Length': '0.03', 'Translator Depth': '0.02', 'Waist': '0.08'}}}
+    self.help.get_screen('result').ids.passed.clear_widgets()
+    morph = {'Morphology': {'sample 1': {'Caudicle Bulb': '0.08', 'Extension': '0.13', 'Hips': '0.34', 'Pollinium Length': '0.73', 'Pollinium Widest': '0.38', 'Retinaculum Length': '0.20', 'Shoulder': '0.08', 'Translator Arm Length': '0.16', 'Translator Depth': '0.06', 'Waist': '0.13'}, 'sample 2': {'Caudicle Bulb': '0.06', 'Extension': '0.11', 'Hips': '0.06', 'Pollinium Length': '0.81', 'Pollinium Widest': '0.19', 'Retinaculum Length': '0.61', 'Shoulder': '0.17', 'Translator Arm Length': '0.23', 'Translator Depth': '0.05', 'Waist': '0.12'}, 'sample 3': {'Caudicle Bulb': '0.12', 'Extension': '0.17', 'Hips': '0.02', 'Pollinium Length': '0.62', 'Pollinium Widest': '0.24', 'Retinaculum Length': '0.35', 'Shoulder': '0.26', 'Translator Arm Length': '0.03', 'Translator Depth': '0.02', 'Waist': '0.08'}}}
 
     sample_name = []
     sample_data=[]
@@ -104,97 +107,133 @@ def identify(self,morph):
     # DETERMINE WHAT SPECIES PASSED
     passed = score['mean difference score'][score['mean difference score'] <= 5].index.tolist()
     passed_species = score_table['species'][passed].values
+    print(passed_species)
 
-    if passed_species:
-    #T TEST
-        t_test_val = []
-        array_t_test = []
-        landmarks = ['Caudicle Bulb', 
-                    "Extension",
-                    "Hips",
-                    'Pollinium Length',
-                    "Pollinium Widest",
-                    "Retinaculum Length",
-                    "Shoulder",
-                    "Translator Arm Length",
-                    "Translator Depth",
-                    "Waist",]
+    for passer in passed_species:
 
-        for passer in passed_species:
-
-            for i in range(len(uk.T)):
-                val = ttest_ind(d[passer][i], uk[i])
-                array_t_test.append(round(val[1],2))
-                # print(val[1])
-            t_test_val.append(array_t_test)
-        # t_test_val
-
-        t_test_df = pd.DataFrame(t_test_val).T
-        t_test_df.insert(0,"landmarks",landmarks) 
-        
-        conditions = [
-            (t_test_df[0] <= 0.05),
-            (t_test_df[0] > 0.05)
-            ]
-        values = ['significant difference', 'no significant difference']
-
-        t_test_df['interpretaion'] = np.select(conditions, values)
-        print(score_table, passed_species, t_test_df)
-
-        for passed in passed_species:
-            self.help.get_screen('result').ids.passed.add_widget(
-                OneLineListItem(
-                    text= passed,
-                )
+        self.help.get_screen('result').ids.passed.add_widget(
+            OneLine(
+                text= passer,
+                on_press= lambda x, value = passer : self.ttest_dialog(uk,passed_species,d,value)
             )
-        score_row = list(score_table.itertuples(index=False, name=None))
-
-        print(score_row)
-        # layout = AnchorLayout()
-        data_tables = MDDataTable(
-            size_hint=(0.9, 0.9),
-            use_pagination=True,
-            rows_num=10,
-            column_data=[
-                ("Hoya Species", dp(35)),
-                ("Mean Difference Score", dp(50)),
-            ],
-            row_data= score_row
         )
-        self.help.get_screen('result').ids.diff.add_widget(data_tables)
 
-        t_test_row = list(t_test_df.itertuples(index=False, name=None))
-        print(t_test_row)
-        # layout = AnchorLayout()
-        data_tables = MDDataTable(
-            size_hint=(0.9, 0.9),
-            use_pagination=True,
-            rows_num=10,
-            column_data=[
-                ("Landmarks", dp(35)),
-                ("pvalue", dp(15)),
-                ("interpretation", dp(50)),
-            ],
-            row_data= t_test_row
-        )
-        self.help.get_screen('result').ids.ttest.add_widget(data_tables)    
+    # if len(passed_species) > 0:
+    # #T TEST
 
-    else:
 
-        score_row = list(score_table.itertuples(index=False, name=None))
-        print(score_row)
-        # layout = AnchorLayout()
-        data_tables = MDDataTable(
-            size_hint=(0.9, 0.9),
-            use_pagination=True,
-            rows_num=10,
-            column_data=[
-                ("Hoya Species", dp(35)),
-                ("Mean Difference Score", dp(50)),
-            ],
-            row_data= score_row
-        )
-        self.help.get_screen('result').ids.diff.add_widget(data_tables)
+
+
+    #     t_test_val = []
+    #     array_t_test = []
+    #     landmarks = ['Caudicle Bulb', 
+    #                 "Extension",
+    #                 "Hips",
+    #                 'Pollinium Length',
+    #                 "Pollinium Widest",
+    #                 "Retinaculum Length",
+    #                 "Shoulder",
+    #                 "Translator Arm Length",
+    #                 "Translator Depth",
+    #                 "Waist",]
+            
+    #     for i in range(len(uk.T)):
+    #         val = ttest_ind(d[passer][i], uk[i])
+    #         array_t_test.append(round(val[1],2))
+    #         # print(val[1])
+    #     t_test_val.append(array_t_test)
+    #     # t_test_val
+
+    #     print(t_test_val)
+
+    #     t_test_df = pd.DataFrame(t_test_val).T
+    #     t_test_df.insert(0,"landmarks",landmarks) 
+        
+    #     conditions = [
+    #         (t_test_df[0] <= 0.05),
+    #         (t_test_df[0] > 0.05)
+    #         ]
+    #     values = ['significant difference', 'no significant difference']
+
+    #     t_test_df['interpretaion'] = np.select(conditions, values)
+    #     print(score_table, passed_species, t_test_df)
+
+
+    #     t_test_row = list(t_test_df.itertuples(index=False, name=None))
+    #     print(t_test_row)
+    #     # layout = AnchorLayout()
+    #     data_tables = MDDataTable(
+    #         size_hint=(0.9, 0.9),
+    #         use_pagination=True,
+    #         rows_num=10,
+    #         column_data=[
+    #             ("Landmarks", dp(35)),
+    #             ("pvalue", dp(15)),
+    #             ("interpretation", dp(50)),
+    #         ],
+    #         row_data= t_test_row
+    #     )
+    #     self.help.get_screen('result').ids.ttest.add_widget(data_tables) 
+        # self.content_cls.dialog8.ids.ttest.add_widget(data_tables)
+
+        # self.help.get_screen('result').ids.passed.add_widget(
+        #     OneLine(
+        #         text= passer,
+        #         on_press = lambda x: self.ttest_dialog()
+        #     )
+        # )
+
+
+    score_row = list(score_table.itertuples(index=False, name=None))
+    print(score_row)
+    self.dialog6.dismiss(force=True)
+    self.swtchScreen('result')
+
+    # layout = AnchorLayout()
+    data_tables = MDDataTable(
+        size_hint=(0.9, 0.9),
+        use_pagination=True,
+        rows_num=10,
+        column_data=[
+            ("Hoya Species", dp(35)),
+            ("Mean Difference Score", dp(50)),
+        ],
+        row_data= score_row
+    )
+    self.help.get_screen('result').ids.diff.add_widget(data_tables)
+
+   
+        # self.dialog6.dismiss(force=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # else:
+
+    #     score_row = list(score_table.itertuples(index=False, name=None))
+    #     print(score_row)
+    #     # layout = AnchorLayout()
+    #     data_tables = MDDataTable(
+    #         size_hint=(0.5, 0.5),
+    #         use_pagination=True,
+    #         rows_num=10,
+    #         column_data=[
+    #             ("Hoya Species", dp(35)),
+    #             ("Mean Difference Score", dp(50)),
+    #         ],
+    #         row_data= score_row
+    #     )
+    #     self.help.get_screen('result').ids.diff.add_widget(data_tables)
+        # self.dialog6.dismiss(force=True)
 
     # self.help.get_screen('uploaddoc').current
     # help.current = 'camera'

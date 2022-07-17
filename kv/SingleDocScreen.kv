@@ -10,7 +10,7 @@
             title: "Example Tabs"
             type_height: "small"
             left_action_items: [["arrow-left", lambda x : app.swtchScreen('collections')]]
-            right_action_items: [["delete", lambda x : app.delete_dialog()], ["file-edit", lambda x : app.edit_doc()]]
+            right_action_items: [["google-drive", lambda x : app.openGdrive()],["delete", lambda x : app.delete_dialog()], ["file-edit", lambda x : app.editDoc()]]
 
         MDTabs:
             id: tabs

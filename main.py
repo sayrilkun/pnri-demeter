@@ -1,3 +1,4 @@
+from urllib.parse import urldefrag
 from yutils.imports import *
 from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelThreeLine, MDExpansionPanelOneLine
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -22,7 +23,7 @@ class IconLeftSampleWidget(IRightBodyTouch, MDIconButton):
     pass
 
 class OneLineIcon(OneLineAvatarIconListItem):
-    pass
+    text = StringProperty()
 
 class ThreeLineIcon(ThreeLineAvatarIconListItem):
     pass
@@ -32,7 +33,8 @@ class OneLine(OneLineListItem):
 
 class Tab(MDFloatLayout, MDTabsBase):
     pass
-
+class SwipeToDeleteItem(MDCardSwipe):
+    text = StringProperty()
 
 class DemoApp(MDApp):
 
@@ -96,6 +98,9 @@ class DemoApp(MDApp):
     def show_dialog(self):
         dialog.show_dialog(self)
 
+    dialog9= None
+    def ttest_dialog(self,uk,passed_species,d,*args):
+        dialog.ttest_dialog(self,uk,passed_species,d,*args)
 ###################################################################
 # SWITCH SCREEN
 ###################################################################
@@ -120,6 +125,17 @@ class DemoApp(MDApp):
         db.child("Hoya").child(doc).remove()
         self.swtchScrn()
 
+    def openGdrive(self):
+        doc= self.help.get_screen('singledoc').ids.species.title
+        try:
+            url = self.all_docs[doc]['urls']['drive']
+            if url is None or url == '':
+                toast('File does not exist')
+            else:
+                webbrowser.open(url)
+        except Exception as e:
+            toast('File does not exist')
+            
 ###################################################################
 # GET DOCUMENT LISTS FROM DATABASE
 ###################################################################
@@ -252,8 +268,6 @@ class DemoApp(MDApp):
         threading.Thread(target=self.passValue, args = args).start()
 
     def passValue(self, *args):
-
-
         args_str = ','.join(map(str,args))
 
         icon = 'https://firebasestorage.googleapis.com/v0/b/pnri-demeter.appspot.com/o/hoya%20(1).png?alt=media&token=491584b8-4d48-487a-9f41-c5a3faa1401c'
@@ -275,7 +289,7 @@ class DemoApp(MDApp):
 
         def open(url):
             if url is None or url == '':
-                self.show_no_doc_dialog()
+                toast('File does not exist')
 
             else:
                 webbrowser.open(url)
@@ -341,12 +355,15 @@ class DemoApp(MDApp):
         for key, value in passport_data.items():
             screen2.ids.datas.add_widget(
                 OneLine(
-                    text=f"{key} : {value}"
+                    text=f"{key} : {value}",
+                    # on_long_touch = print('fads')
                     # halign="center"
                 )
             )
         self.help.current = 'singledoc'    
-        self.help.transition.direction = 'left'   
+        self.help.transition.direction = 'left'  
+        args_str = ''
+
         # self.dialog6.dismiss(force=True)
 
 ###################################################################
@@ -355,6 +372,7 @@ class DemoApp(MDApp):
     def change_state(self, num):
         global states
         states = num
+        print(states)
         # return state
     
     def check_state(self):
@@ -377,7 +395,40 @@ class DemoApp(MDApp):
 ###################################################################
 # EDIT DOCUMENT
 ###################################################################
-        
+    def editDoc(self):
+        self.change_state(0)
+        self.swtchScreen('uploaddoc')
+        doc= self.help.get_screen('singledoc').ids.species.title
+        self.help.get_screen('uploaddoc').ids.input_1.text = self.all_docs[doc]["Passport Data"]['Name']
+        self.help.get_screen('uploaddoc').ids.input_2.text = self.all_docs[doc]["Passport Data"]['Date Acquired']
+        self.help.get_screen('uploaddoc').ids.input_3.text = self.all_docs[doc]["Passport Data"]['Accession Origin']
+        self.help.get_screen('uploaddoc').ids.input_4.text = self.all_docs[doc]["Passport Data"]['Project']
+        self.help.get_screen('uploaddoc').ids.input_5.text = self.all_docs[doc]["Passport Data"]['Project Leader']
+        self.help.get_screen('uploaddoc').ids.input_6.text = self.all_docs[doc]["Passport Data"]['Other Details']
+        self.help.get_screen('uploaddoc').ids.input_7.text = self.all_docs[doc]["Passport Data"]['Status']
+
+        self.help.get_screen('uploaddoc').ids.input_11.text = self.all_docs[doc]['urls']["img_url"]
+        self.help.get_screen('uploaddoc').ids.input_12.text = self.all_docs[doc]['urls']["file_url"]
+        self.help.get_screen('uploaddoc').ids.input_13.text = self.all_docs[doc]['urls']["drive"]
+
+
+        morphology = self.all_docs[doc]['Morphology']
+        morphi  = {
+                "Morphology":{
+                }
+            }
+        morphi['Morphology'].update(morphology)
+        self.morph['Morphology'].update(morphology)
+        for key, value in morphology.items():
+            self.help.get_screen('uploaddoc').ids.box.add_widget(
+                OneLineIcon(
+                    text=f"{key}",
+                    on_press= lambda x, value_for_pass= key: self.show_morph(morphi,value_for_pass)
+                    # halign="center"
+                )
+            )
+
+
     def edit_doc(self):
         passportData = ['Name','Date of Acquisition', 'Accession Origin', 'Project', 'Project Leader', 'Other Detals']
         # morphology = ['Pollinium', 'Retinaculum', 'Caudicle Bulb Diameter', 'Translator']
@@ -400,19 +451,19 @@ class DemoApp(MDApp):
             )
             
 
-        morphology = db.child("Hoya").child(doc).child("Morphology").get()
-        for datas in morphology.each():
-            self.help.get_screen('edit').ids.morph.add_widget(
-                MDTextField(
-                    # id = datas.key(),
-                    hint_text= datas.key(),
-                    text = datas.val(),
-                    size_hint = (.75,0.08),
-                    mode = "rectangle",
-                    color_mode = 'accent',
-                    pos_hint = {"center_x": 0.5}
-                )
-            )
+        # morphology = db.child("Hoya").child(doc).child("Morphology").get()
+        # for datas in morphology.each():
+        #     self.help.get_screen('edit').ids.morph.add_widget(
+        #         MDTextField(
+        #             # id = datas.key(),
+        #             hint_text= datas.key(),
+        #             text = datas.val(),
+        #             size_hint = (.75,0.08),
+        #             mode = "rectangle",
+        #             color_mode = 'accent',
+        #             pos_hint = {"center_x": 0.5}
+        #         )
+        #     )
 
     def update_doc(self):
         pass
@@ -455,6 +506,16 @@ class DemoApp(MDApp):
 ###################################################################
 # UPLOAD DOCUMENT
 ###################################################################
+    def remove_item(self, instance, wet):
+        self.help.get_screen('iden').ids.box.remove_widget(instance)
+        self.help.get_screen('uploaddoc').ids.box.remove_widget(instance)
+        del self.morph['Morphology'][wet]
+        print(self.morph)
+
+
+    def popMorph(self):
+        self.help.get_screen('iden').ids.box.remove_widget()
+
     def puppy(self):
 
 
@@ -484,8 +545,8 @@ class DemoApp(MDApp):
                 "Waist": f'{wl}',
                 }
             }
-        if sn == '':
-            toast("Name Cannot Be Blank!")
+        if sn == '' or cb == '' or el == ''or hl == ''or pl == ''or pw == ''or rl == '' or shl == ''or tal == ''or td == ''or wl == '':
+            toast("Data must be complete")
         else:
             self.morph['Morphology'].update(sopu)
             print(self.morph)
@@ -527,6 +588,7 @@ class DemoApp(MDApp):
         threading.Thread(target=(self.upload)).start()
 
     def upload(self):
+
         input_fields = ['name','dateAcq','accOrg','project','prjLdr','otherDtls',
                         'pollinium','retinaculum','translator', 'caudicle', 'image', 'file']
             
@@ -542,45 +604,76 @@ class DemoApp(MDApp):
 
         image = self.help.get_screen('uploaddoc').ids.input_11.text
         file = self.help.get_screen('uploaddoc').ids.input_12.text
+        drive = self.help.get_screen('uploaddoc').ids.input_13.text
+
 
         if image == "":
             img_url = ""
+        elif 'https' in image:
+            img_url = image
         else:
             storage.child(f"{name}/{name}_image").put(image)
             img_url = storage.child(f"{name}/{name}_image").get_url(None)
         
         if file == "":
             file_url = ""
+        elif 'https' in file:
+            file_url = file
         else:
             storage.child(f"{name}/{name}_file").put(file)
             file_url = storage.child(f"{name}/{name}_file").get_url(None)
 
-        scan_id = self.generate()
+        if states == 1:
 
-        qr_url = self.add_qr(name, scan_id)
+            scan_id = self.generate()
 
-        data = { 
-            "Passport Data": {
-                'Name': f'{name}',
-                'Date Acquired':f'{dateAcq}',
-                'Accession Origin': f'{accOrg}',
-                'Project': f'{project}',
-                'Project Leader': f'{prjLdr}',
-                'Other Details': f'{otherDtls}',
-                'Status': f'{status}',
-            },
+            qr_url = self.add_qr(name, scan_id)
 
-            "urls":{
-                'img_url' : f'{img_url}',
-                'file_url' : f'{file_url}',
-                'qr_url': f'{qr_url}',
-            },
+            data = { 
+                "Passport Data": {
+                    'Name': f'{name}',
+                    'Date Acquired':f'{dateAcq}',
+                    'Accession Origin': f'{accOrg}',
+                    'Project': f'{project}',
+                    'Project Leader': f'{prjLdr}',
+                    'Other Details': f'{otherDtls}',
+                    'Status': f'{status}',
+                },
 
-            'scan_id' : f'{scan_id}',
-            'status': f'{status}',
-            'sample_num':sample_num,
-        }
-        data.update(self.morph)
+                "urls":{
+                    'img_url' : f'{img_url}',
+                    'file_url' : f'{file_url}',
+                    'qr_url': f'{qr_url}',
+                    'drive': f'{drive}',
+                },
+
+                'scan_id' : f'{scan_id}',
+                'status': f'{status}',
+                'sample_num':sample_num,
+            }
+            data.update(self.morph)
+
+        else:
+            data = { 
+                "Passport Data": {
+                    'Name': f'{name}',
+                    'Date Acquired':f'{dateAcq}',
+                    'Accession Origin': f'{accOrg}',
+                    'Project': f'{project}',
+                    'Project Leader': f'{prjLdr}',
+                    'Other Details': f'{otherDtls}',
+                    'Status': f'{status}',
+                },
+                'status': f'{status}',
+                'sample_num':sample_num,
+            }
+            data.update(self.morph)
+
+            url_data = {
+                    'img_url' : f'{img_url}',
+                    'file_url' : f'{file_url}',
+                    'drive': f'{drive}',        
+                    }
 
         if name == '':
             toast("Name Cannot Be Blank!")
@@ -590,15 +683,18 @@ class DemoApp(MDApp):
             toast("At least one sample is required")
             self.dialog6.dismiss(force=True)
 
-
-
-
-
-        elif name in self.arr:
-            toast("Unable to upload! Name exists in database!")
-            self.dialog6.dismiss(force=True)
         else:
-            db.child('Hoya').child(f'{name}').set(data)
+            if states == 1:
+                if name in self.arr:
+                    toast("Unable to upload! Name exists in database!")
+                    self.dialog6.dismiss(force=True)
+                else:
+                    db.child('Hoya').child(f'{name}').set(data)
+            else:
+                db.child('Hoya').child(f'{name}').update(data)
+                db.child('Hoya').child(f'{name}').child('urls').update(url_data)
+
+
             self.clear_morph()
             self.dialog6.dismiss(force=True)
             toast("Document Saved Successfully")
@@ -607,8 +703,17 @@ class DemoApp(MDApp):
     def add_img(self):
         root = tk.Tk()
         root.withdraw()
-        image = filedialog.askopenfilename()
+        image = filedialog.askopenfilename(title='select', filetypes=[
+                    ("image", ".jpeg"),
+                    ("image", ".png"),
+                    ("image", ".jpg"),]
+        )
+        # print(file)))
         print(image)
+                    #     self.input_filename = askopenfilenames(title='select', filetypes=[
+                    # ("image", ".jpeg"),
+                    # ("image", ".png"),
+                    # ("image", ".jpg"),
         # print(file)
         self.help.get_screen('uploaddoc').ids.input_11.text = image
 
@@ -711,6 +816,7 @@ class DemoApp(MDApp):
             toast("No Such Document!")
 
     def oks_thread(self):
+        self.spin_dialog()
         threading.Thread(target=(self.oks_qr)).start()
 
 ###################################################################
@@ -730,16 +836,26 @@ class DemoApp(MDApp):
 #     self.spin_dialog()
 #     threading.Thread(target=(self.identify), args=self.morph).start()
 
+    def iden_thread(self,*args):
+        threading.Thread(target=iden.identify, args = (self,self.morph)).start()
+
     def createTable(self):
-        if len(self.morph['Morphology']) < 3:
-            toast("need at last 3 samples")
-        # morph = {'Morphology': {'sample 1': {'Caudicle Bulb': '0.08', 'Extension': '0.13', 'Hips': '0.34', 'Pollinium Length': '0.73', 'Pollinium Widest': '0.38', 'Retinaculum Length': '0.20', 'Shoulder': '0.08', 'Translator Arm Length': '0.16', 'Translator Depth': '0.06', 'Waist': '0.13'}, 'sample 2': {'Caudicle Bulb': '0.06', 'Extension': '0.11', 'Hips': '0.06', 'Pollinium Length': '0.81', 'Pollinium Widest': '0.19', 'Retinaculum Length': '0.61', 'Shoulder': '0.17', 'Translator Arm Length': '0.23', 'Translator Depth': '0.05', 'Waist': '0.12'}, 'sample 3': {'Caudicle Bulb': '0.12', 'Extension': '0.17', 'Hips': '0.02', 'Pollinium Length': '0.62', 'Pollinium Widest': '0.24', 'Retinaculum Length': '0.35', 'Shoulder': '0.26', 'Translator Arm Length': '0.03', 'Translator Depth': '0.02', 'Waist': '0.08'}}}
-        else:
-            iden.identify(self, self.morph)
+        self.spin_dialog()
+        self.iden_thread(self.morph)
+        # self.swtchScreen('result')
+
+
+        # if len(self.morph['Morphology']) < 3:
+        #     toast("need at last 3 samples")
+        # # morph = {'Morphology': {'sample 1': {'Caudicle Bulb': '0.08', 'Extension': '0.13', 'Hips': '0.34', 'Pollinium Length': '0.73', 'Pollinium Widest': '0.38', 'Retinaculum Length': '0.20', 'Shoulder': '0.08', 'Translator Arm Length': '0.16', 'Translator Depth': '0.06', 'Waist': '0.13'}, 'sample 2': {'Caudicle Bulb': '0.06', 'Extension': '0.11', 'Hips': '0.06', 'Pollinium Length': '0.81', 'Pollinium Widest': '0.19', 'Retinaculum Length': '0.61', 'Shoulder': '0.17', 'Translator Arm Length': '0.23', 'Translator Depth': '0.05', 'Waist': '0.12'}, 'sample 3': {'Caudicle Bulb': '0.12', 'Extension': '0.17', 'Hips': '0.02', 'Pollinium Length': '0.62', 'Pollinium Widest': '0.24', 'Retinaculum Length': '0.35', 'Shoulder': '0.26', 'Translator Arm Length': '0.03', 'Translator Depth': '0.02', 'Waist': '0.08'}}}
+        # else:
+        #     # iden.identify(self, self.morph)
+        #     self.spin_dialog()
+        #     self.iden_thread(self.morph)
 
         # score_table,passed_species,t_test_df = iden.identify(self.morph)
         # print(score_table,passed_species,t_test_df)
-            self.swtchScreen('result')
+            # self.swtchScreen('result')
         # morphi['Morphology'].update(morphology.val())
         # for passed in passed_species:
         #     self.help.get_screen('result').ids.passed.add_widget(
@@ -873,7 +989,7 @@ class DemoApp(MDApp):
         self.title='Demeter'
         self.theme_cls.theme_style = "Light"
         self.theme_cls.primary_palette = "LightGreen"   
-
+        self.theme_cls.material_style = "M3"
         self.help = Builder.load_file('main.kv')
         # screen.add_widget(self.help)
         return self.help

@@ -12,13 +12,15 @@
     #     padding:dp(25)
     Image: 
         source: 'assets\images\logo.jpg'
-        pos_hint: {"center_x": 0.5, "center_y": 0.75}
+        pos_hint: {"center_x": 0.5, "center_y": 0.80}
         size_hint_y: None
         # height:'4.150cm'
 
         # width: 10
         # height: dp(100)
         # allow_stretch: True
+
+
     MDTextFieldRound:
         id: username
         hint_text: 'Username'
@@ -37,6 +39,16 @@
         size_hint: .75,0.08
         color_mode: 'accent'
         password: True
+
+    MDLabel:
+        halign: "center"
+        text: "Admin Access"
+        pos_hint: {'center_x': .35, 'center_y': .65}
+
+    MDSwitch:
+        pos_hint: {'center_x': .55, 'center_y': .65}
+        active: True
+
     MDRaisedButton:
         text: 'Sign In'
         pos_hint: {"center_x": 0.5, "center_y": 0.25}

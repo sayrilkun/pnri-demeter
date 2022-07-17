@@ -3,6 +3,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.button import MDFlatButton, MDRaisedButton, MDRoundFlatButton
 from kivy.properties import ObjectProperty
 from kivymd.uix.list import TwoLineListItem
+from kivy.metrics import dp
+from kivymd.uix.datatables import MDDataTable
+from yutils.imports import *
 
 class TwoLine(TwoLineListItem):
     pass
@@ -24,6 +27,81 @@ class Morph(BoxLayout):
                 )
             )
 
+class Ttest(BoxLayout):
+    confirm_check_in_list=ObjectProperty()
+    def check_conflicts(self,uk,passed_species,d,args_str):
+        morph = {'Morphology': {'sample 1': {'Caudicle Bulb': '0.08', 'Extension': '0.13', 'Hips': '0.34', 'Pollinium Length': '0.73', 'Pollinium Widest': '0.38', 'Retinaculum Length': '0.20', 'Shoulder': '0.08', 'Translator Arm Length': '0.16', 'Translator Depth': '0.06', 'Waist': '0.13'}, 'sample 2': {'Caudicle Bulb': '0.06', 'Extension': '0.11', 'Hips': '0.06', 'Pollinium Length': '0.81', 'Pollinium Widest': '0.19', 'Retinaculum Length': '0.61', 'Shoulder': '0.17', 'Translator Arm Length': '0.23', 'Translator Depth': '0.05', 'Waist': '0.12'}, 'sample 3': {'Caudicle Bulb': '0.12', 'Extension': '0.17', 'Hips': '0.02', 'Pollinium Length': '0.62', 'Pollinium Widest': '0.24', 'Retinaculum Length': '0.35', 'Shoulder': '0.26', 'Translator Arm Length': '0.03', 'Translator Depth': '0.02', 'Waist': '0.08'}}}
+
+        self.ids.confirm_check_in_list.clear_widgets()
+        # data_tables = MDDataTable(
+        #     size_hint=(1, 1),
+        #     use_pagination=True,
+        #     check=True,
+        #     # name column, width column, sorting function column(optional)
+        #     column_data=[
+        #         ("No.", dp(30)),
+        #         ("Status", dp(30)),
+        #         ("Signal Name", dp(60)),
+        #         ("Severity", dp(30)),
+        #         ("Stage", dp(30)),
+        #         ("Schedule", dp(30), lambda *args: print("Sorted using Schedule")),
+        #         ("Team Lead", dp(30)),
+        #     ],
+        # )
+        # for passer in passed_species:
+
+
+        t_test_val = []
+        array_t_test = []
+        landmarks = ['Caudicle Bulb', 
+                    "Extension",
+                    "Hips",
+                    'Pollinium Length',
+                    "Pollinium Widest",
+                    "Retinaculum Length",
+                    "Shoulder",
+                    "Translator Arm Length",
+                    "Translator Depth",
+                    "Waist",]
+        
+        for i in range(len(uk.T)):
+            val = ttest_ind(d[args_str][i], uk[i])
+            array_t_test.append(round(val[1],2))
+            # print(val[1])
+        t_test_val.append(array_t_test)
+        # t_test_val
+
+        print(t_test_val)
+
+        t_test_df = pd.DataFrame(t_test_val).T
+        t_test_df.insert(0,"landmarks",landmarks) 
+        
+        conditions = [
+            (t_test_df[0] <= 0.05),
+            (t_test_df[0] > 0.05)
+            ]
+        values = ['significant difference', 'no significant difference']
+
+        t_test_df['interpretaion'] = np.select(conditions, values)
+
+
+        t_test_row = list(t_test_df.itertuples(index=False, name=None))
+        print(t_test_row)
+        # layout = AnchorLayout()
+        data_tables = MDDataTable(
+            size_hint=(1, 1),
+            use_pagination=True,
+            rows_num=10,
+            column_data=[
+                (args_str, dp(35)),
+                ("pvalue", dp(15)),
+                ("interpretation", dp(50)),
+            ],
+            row_data= t_test_row
+        )
+        # self.help.get_screen('result').ids.ttest.add_widget(data_tables) 
+
+        self.ids.confirm_check_in_list.add_widget(data_tables)
 class Sample(BoxLayout):
     pass
 
@@ -129,6 +207,7 @@ def show_dialog(self):
             type="custom",
             content_cls=Sample(),
             buttons=[
+
                 MDFlatButton(
                     text="CANCEL",
                     theme_text_color="Custom",
@@ -143,3 +222,15 @@ def show_dialog(self):
             ],
         )
     self.dialog8.open()
+
+def ttest_dialog(self,uk,passed_species,d, *args):
+    args_str = ','.join(map(str,args))
+    if not self.dialog9:
+        self.dialog9 = MDDialog(
+            # title=args_str,
+            content_cls=Ttest(),
+            type="custom",
+
+        )
+    self.dialog9.content_cls.check_conflicts(uk,passed_species,d,args_str)
+    self.dialog9.open()

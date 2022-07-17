@@ -1,5 +1,5 @@
 ScreenManager:
-    LoginScreen:
+    # LoginScreen:
     MenuScreen:
     CameraScreen:
     ImageScreen:
@@ -14,15 +14,17 @@ ScreenManager:
     EditScreen:
     ResultScreen:
 
-<OneLineIcon>:            
+<OneLineIcon>:     
+    text: root.text
+    on_press: print(self.text)
     IconLeftWidget:
         icon: 'flower-poppy'
         # on_press:
         #     print("dsfdfsdasdfasdgasgasfasfsadgadsfasd")
     IconRightWidget:
-        icon: 'dots-vertical'
+        icon: 'trash-can'
         on_press:
-            app.show_simple_dialog()
+            app.remove_item(root,root.text)
 
 <ThreeLineIcon>:            
     IconLeftWidget:
@@ -33,6 +35,7 @@ ScreenManager:
         icon: 'dots-vertical'
         on_press:
             app.show_simple_dialog()
+            
 
 <Content>:
     orientation: "vertical"
@@ -51,7 +54,9 @@ ScreenManager:
     spacing: "12dp"
     size_hint_y: None
     height: "50dp"
-
+    # MDLabel:
+    #     text:" Processing... "
+    #     pos_hint: {'center_x': .5, 'center_y': .7}
     MDSpinner:
         id: spinner
         size_hint: None, None
@@ -86,7 +91,22 @@ ScreenManager:
     ScrollView:
         MDList:
             id: confirm_check_in_list
-                   
+
+<Ttest>
+    confirm_check_in_list: confirm_check_in_list
+    id: confirm_check_in_dialog
+
+    orientation: "vertical"
+    spacing: "1dp"
+    size_hint_y: None
+    height: "450dp"
+
+    AnchorLayout:
+        id: confirm_check_in_list
+
+    # ScrollView:
+    #     MDList:
+    #         id: confirm_check_in_list
 <Sample>
     orientation: "vertical"
     spacing: "12dp"
@@ -103,6 +123,7 @@ ScreenManager:
             FloatLayout:
                 size_hint: 1,2.2
                 pos_hint: {'top':0.99}
+
                 MDTextField:
                     id: input_19
                     hint_text: "Sample name/no."
@@ -159,10 +180,30 @@ ScreenManager:
                     hint_text: "Waist"                    
                     pos_hint: {'center_x': .5, 'center_y': .26,}
 
+<SwipeToDeleteItem>:
+    size_hint_y: None
+    height: content.height
+
+    MDCardSwipeLayerBox:
+        padding: "8dp"
+
+        MDIconButton:
+            icon: "trash-can"
+            pos_hint: {"center_y": .5}
+            on_release: app.remove_item(root)
+
+    MDCardSwipeFrontBox:
+
+        OneLineListItem:
+            id: content
+            text: root.text
+            _no_ripple_effect: True
+            on_press: app.show_morph(app.morph,self.text)
 
 
-
-
+# <Ttest>:
+#     AnchorLayout:
+#         id:ttest    
 
 
 
