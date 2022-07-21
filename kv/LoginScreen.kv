@@ -10,6 +10,17 @@
     # MDBoxLayout:
     #     orientation: "vertical"
     #     padding:dp(25)
+    Image
+        source: 'assets\images\Presentation1.png'
+        pos_hint: {"center_x": 0.5, "center_y": 0.93}
+        size_hint_y: None
+        width: 75
+        height:  75
+    # MDIconButton:
+    #     icon: 'assets\images\enu.png'
+    #     pos_hint: {"center_x": 0.55, "center_y": 0.95}
+    #     size_hint_y: None
+
     Image: 
         source: 'assets\images\logo.jpg'
         pos_hint: {"center_x": 0.5, "center_y": 0.80}
@@ -40,18 +51,40 @@
         color_mode: 'accent'
         password: True
 
-    MDLabel:
-        halign: "center"
-        text: "Admin Access"
-        pos_hint: {'center_x': .35, 'center_y': .65}
+    MDFloatLayout:
 
-    MDSwitch:
-        pos_hint: {'center_x': .55, 'center_y': .65}
-        active: True
+        Check:
+            active: True
+            pos_hint: {'center_x': .4, 'center_y': .65}
+            on_press: app.admin_state('admin')
+
+        Check:
+            pos_hint: {'center_x': .6, 'center_y': .65}
+            on_press: app.admin_state('user')
+
+        MDLabel:
+            halign: "center"
+            text: "Admin"
+            pos_hint: {'center_x': .4, 'center_y': .69}
+
+        MDLabel:
+            halign: "center"
+            text: "User"
+            pos_hint: {'center_x': .6, 'center_y': .69}
+    #     pos_hint: {'center_x': .35, 'center_y': .65}
+
+    # MDSwitch:
+    #     pos_hint: {'center_x': .55, 'center_y': .65}
+    #     active: True
 
     MDRaisedButton:
         text: 'Sign In'
-        pos_hint: {"center_x": 0.5, "center_y": 0.25}
+        pos_hint: {"center_x": 0.5, "center_y": 0.30}
         on_press: 
-            root.sign_in()
+            app.sign_in()
+
+<Check@MDCheckbox>:
+    group: 'group'
+    size_hint: None, None
+    size: dp(48), dp(48)
 

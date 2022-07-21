@@ -68,7 +68,8 @@
                 items_count:""
                 on_press: 
                     root.manager.current = 'help'
-                    root.manager.transition.direction = "left"
+                    root.manager.transition.direction = "left" 
+
 
             ElementCard:
                 image:"assets/images/setting.png"
@@ -76,9 +77,12 @@
                 subtext:""
                 items_count:""
                 on_press: 
+                    if app.access == "admin": \
                     root.manager.current = 'settings'
                     root.manager.transition.direction = "left"
-
+                    if app.access == "user": \
+                    app.admin_toast()
+                    
 <ElementCard@MDCard>:
     md_bg_color:app.dark1
     padding:dp(15)

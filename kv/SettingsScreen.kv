@@ -55,5 +55,30 @@
         pos_hint: {"center_x": 0.5, "center_y": 0.35}
         on_press: root.changeCred()
 
+    MDFloatLayout:
 
-        
+        Checker:
+            id: admin
+            active: True
+            pos_hint: {'center_x': .4, 'center_y': .85}
+            on_press: root.admin_state('admin')
+
+        Checker:
+            id:user
+            pos_hint: {'center_x': .6, 'center_y': .85}
+            on_press: root.admin_state('user')
+
+        MDLabel:
+            halign: "center"
+            text: "Admin"
+            pos_hint: {'center_x': .4, 'center_y': .89}
+
+        MDLabel:
+            halign: "center"
+            text: "User"
+            pos_hint: {'center_x': .6, 'center_y': .89}
+
+<Checker@MDCheckbox>:
+    group: 'group'
+    size_hint: None, None
+    size: dp(48), dp(48)

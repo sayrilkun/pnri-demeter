@@ -14,7 +14,7 @@ from scipy.stats import ttest_ind
 from itertools import islice
 from tkinter import filedialog
 from pyzbar.pyzbar import decode
-from datetime import datetime
+from datetime import date
 
 from kivymd.uix.datatables import MDDataTable
 from kivy.uix.anchorlayout import AnchorLayout
@@ -25,7 +25,8 @@ import yutils.frame_draw as frame_draw
 import yutils.dialog as dialog
 import yutils.iden as iden
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import ImageDraw, ImageFont
+import PIL.Image
 
 # import utils.camruler as camruler
 

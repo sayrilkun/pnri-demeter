@@ -19,32 +19,41 @@
             # on_tab_switch: app.on_tab_switch(*args)
             Tab:
                 title: "Passport Data"
-                MDFloatLayout:
-                    # orientation: "vertical"
-                    MDRoundFlatButton:
-                        id: imag
-                        pos_hint: {"center_x": 0.7, "center_y": 0.95}
-                    MDRoundFlatButton:
-                        id: file
-                        pos_hint: {"center_x": 0.7, "center_y": 0.85}
+
+                # MDFloatLayout:
+                #     # orientation: "vertical"
+                #     MDRoundFlatButton:
+                #         id: imag
+                #         pos_hint: {"center_x": 0.7, "center_y": 0.95}
+                #     MDRoundFlatButton:
+                #         id: file
+                #         pos_hint: {"center_x": 0.7, "center_y": 0.85}
                 MDBoxLayout:
                     orientation: "vertical"
                     # # size_hint_y:.5
                     padding:dp(15)
+
                     AsyncImage:
                         id: img_url
                         size_hint_y: None
                         source: 'http://kivy.org/slides/kivypictures-thumb.jpg'
                         width: 100
-                        height:  100
+                        height:  250
                         allow_stretch: True
-                        pos_hint: {"center_x": 0.3, "center_y": 0.9}
+                        pos_hint: {"center_x": 0.5, "center_y": 0.9}
+
                     MDBoxLayout:
                         orientation: "vertical"
                         padding:dp(5)
+                        MDIconButton:
+                            icon: "download"
+                            pos_hint: {"center_x": 0.90, "center_y": 0.95}
+                            on_press: app.open(species.title,'image')
                         ScrollView:
                             MDList:
                                 id:datas
+                # MDFloatLayout:
+
                                 
             Tab:
                 title: "Morphology"
@@ -61,24 +70,31 @@
                     ScrollView:
                         MDList:
                             id:dataso
+                
 
             Tab:
                 title: "QR Code"
-                MDBoxLayout:
-                    orientation: "vertical"
-                    padding:dp(30)
-                    AsyncImage:
-                        id: qr_url
-                        size_hint_y: None
-                        # source: 'http://kivy.org/slides/kivypictures-thumb.jpg'
-                        width: 100
-                        height: dp(300)
-                        allow_stretch: True
-                        pos_hint: {"center_x": 0.5, "center_y": 0.95}
-                    MDBoxLayout:
-                        padding:dp(30)
-                        orientation: "vertical"
-                        MDRaisedButton:
-                            id: qr
-                            text: "Save QR Code"
-                            pos_hint: {"center_x": 0.5, "center_y": 0.6}
+
+
+                AsyncImage:
+                    id: qr_url
+                    size_hint_y: None
+                    # source: 'http://kivy.org/slides/kivypictures-thumb.jpg'
+                    width: 100
+                    height: dp(300)
+                    allow_stretch: True
+                    pos_hint: {"center_x": 0.5, "center_y": 0.65}
+                MDFloatLayout:
+                    MDIconButton:
+                        icon: "download"
+                        pos_hint: {"center_x": 0.90, "center_y": 0.95}
+                        on_press: app.open(species.title,'qr')
+
+                    # MDBoxLayout:
+                    #     padding:dp(30)
+                    #     orientation: "vertical"
+                    #     MDRaisedButton:
+                    #         id: qr
+                    #         text: "Save QR Code"
+                    #         pos_hint: {"center_x": 0.5, "center_y": 0.6}
+                    #         on_press: 

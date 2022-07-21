@@ -1,3 +1,4 @@
+#: import webbrowser webbrowser
 <UploadDocScreen>
     name: 'uploaddoc'
 
@@ -20,13 +21,14 @@
                 
                 MDTextField:
                     id: input_1
-                    hint_text: "Name"
+                    hint_text: "Name (Avoid using special characters like ',./\')"
                     pos_hint: {"center_x": 0.5, "center_y": 0.95}
                     size_hint: .75,0.08
                     color_mode: 'custom'
                     mode: "rectangle"
                     required: True
                     helper_text_mode: "on_error"
+                    # helper_text: ""
                     # line_color_focus: 1, 1, 1, 1
                 MDTextField:
                     id: input_2
@@ -97,39 +99,44 @@
                 MDTextField:
                     id: input_13
                     hint_text: "Google Drive Link"
-                    pos_hint: {"center_x": 0.37, "center_y": 0.34}
-                    size_hint: .50,0.08
-                    mode: "rectangle"
-                    color_mode: 'accent'
-                MDTextField:
-                    id: input_11
-                    hint_text: "Upload Image"
-                    pos_hint: {"center_x": 0.37, "center_y": 0.24}
+                    pos_hint: {"center_x": 0.37, "center_y": 0.95}
                     size_hint: .50,0.08
                     mode: "rectangle"
                     color_mode: 'accent'
 
+                MDRaisedButton:
+                    text: "Open Drive"
+                    pos_hint: {"center_x": 0.8, "center_y": 0.941}
+                    size_hint: .22,0.065
+                    on_press:
+                        webbrowser.open('https://drive.google.com')
+
                 MDTextField:
-                    id: input_12
-                    hint_text: "Upload File"
-                    pos_hint: {"center_x": 0.37, "center_y": 0.14}
+                    id: input_11
+                    hint_text: "Upload Image"
+                    pos_hint: {"center_x": 0.37, "center_y": 0.85}
                     size_hint: .50,0.08
                     mode: "rectangle"
                     color_mode: 'accent'
 
                 MDRaisedButton:
                     text: "Browse"
-                    pos_hint: {"center_x": 0.8, "center_y": 0.233}
+                    pos_hint: {"center_x": 0.8, "center_y": 0.841}
                     size_hint: .22,0.065
                     on_press: 
                         app.add_img()
 
-                MDRaisedButton:
-                    text: "Browse"
-                    pos_hint: {"center_x": 0.8, "center_y": 0.133}
-                    size_hint: .22,0.065
-                    on_press:
-                        app.add_file()
+                MDTextField:
+                    id: input_12
+                    hint_text: "Photograpped by:"
+                    pos_hint: {"center_x": 0.37, "center_y": 0.75}
+                    size_hint: .50,0.08
+                    mode: "rectangle"
+                    color_mode: 'accent'
+
+
+
+
 
 
 
